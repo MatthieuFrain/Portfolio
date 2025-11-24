@@ -13,14 +13,16 @@
 
       <div class="w-px h-4 bg-white/10 mx-2"></div>
 
-      <button
-        @click="toggleDark()"
-        class="p-2.5 text-zinc-400 hover:text-white transition-all duration-300 rounded-full hover:bg-white/5 active:scale-95"
-        aria-label="Toggle Dark Mode"
-      >
-        <Sun v-if="isDark" class="w-4 h-4" />
-        <Moon v-else class="w-4 h-4" />
-      </button>
+      <ClientOnly>
+        <button
+          @click="toggleDark()"
+          class="p-2.5 text-zinc-400 hover:text-white transition-all duration-300 rounded-full hover:bg-white/5 active:scale-95"
+          aria-label="Toggle Dark Mode"
+        >
+          <Sun v-if="isDark" class="w-4 h-4" />
+          <Moon v-else class="w-4 h-4" />
+        </button>
+      </ClientOnly>
     </div>
   </nav>
 </template>

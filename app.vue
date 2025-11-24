@@ -11,7 +11,7 @@
     <main class="relative z-10">
       <HeroSection />
       <BentoGrid />
-      <Projects />
+      <SelectedWorks />
       <TheFooter />
     </main>
   </div>
@@ -27,7 +27,7 @@ useSeoMeta({
   ogTitle: 'Matthieu Frain | Creative Developer',
   description: 'Portfolio of Matthieu Frain, a Creative Developer & SEO Specialist crafting the future of digital experiences.',
   ogDescription: 'Portfolio of Matthieu Frain, a Creative Developer & SEO Specialist crafting the future of digital experiences.',
-  ogImage: 'https://example.com/og-image.jpg', // Replace with actual image URL
+  ogImage: '/og-image.jpg',
   twitterCard: 'summary_large_image',
 })
 

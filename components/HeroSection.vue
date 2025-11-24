@@ -18,9 +18,9 @@
     </div>
 
     <!-- Scroll Indicator -->
-    <div class="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce opacity-50">
+    <a href="#works" class="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce opacity-50 cursor-pointer hover:opacity-100 transition-opacity">
       <div class="w-px h-12 bg-gradient-to-b from-transparent via-zinc-400 to-transparent"></div>
-    </div>
+    </a>
   </section>
 </template>
 
