@@ -14,7 +14,7 @@ const toggleDark = useToggle(isDark)
       <!-- Language Switcher -->
       <button
         @click="toggleLocale"
-        class="text-xs font-medium px-2 py-1 rounded hover:bg-white/10 transition-colors text-zinc-900 dark:text-white"
+        class="text-xs font-medium px-2 py-1 rounded hover:bg-white/10 transition-colors text-zinc-900 dark:text-zinc-300 dark:hover:text-white"
         :aria-label="'Switch to ' + (locale === 'en' ? 'French' : 'English')"
       >
         {{ locale === 'en' ? 'FR' : 'EN' }}
@@ -26,11 +26,11 @@ const toggleDark = useToggle(isDark)
       <!-- Theme Toggle -->
       <button
         @click="toggleDark()"
-        class="p-1 rounded-full hover:bg-white/10 transition-colors text-zinc-900 dark:text-white"
+        class="p-1 rounded-full hover:bg-white/10 transition-colors text-zinc-900 dark:text-zinc-300 dark:hover:text-white"
         aria-label="Toggle Dark Mode"
       >
         <Sun v-if="!isDark" class="h-5 w-5" />
-        <Moon v-else class="h-5 w-5 text-white" />
+        <Moon v-else class="h-5 w-5 text-zinc-300 dark:hover:text-white" />
       </button>
     </ClientOnly>
   </div>

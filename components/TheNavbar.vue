@@ -21,7 +21,7 @@ const scrollToSection = (id: string) => {
     <button
       @click="scrollToSection('home')"
       class="text-sm font-medium transition-colors whitespace-nowrap"
-      :class="activeSection === 'home' ? 'text-indigo-500 dark:text-indigo-400 font-semibold' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'"
+      :class="activeSection === 'home' ? 'text-indigo-500 dark:text-indigo-400 font-semibold' : 'text-zinc-500 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white'"
       :aria-label="t.nav.home"
     >
       {{ t.nav.home }}
@@ -32,7 +32,7 @@ const scrollToSection = (id: string) => {
       <button
         @click="scrollToSection('dna')"
         class="text-sm transition-colors whitespace-nowrap"
-        :class="activeSection === 'dna' ? 'text-indigo-500 dark:text-indigo-400 font-semibold' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'"
+        :class="activeSection === 'dna' ? 'text-indigo-500 dark:text-indigo-400 font-semibold' : 'text-zinc-500 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white'"
         :aria-label="t.nav.dna"
       >
         {{ t.nav.dna }}
@@ -40,7 +40,7 @@ const scrollToSection = (id: string) => {
       <button
         @click="scrollToSection('works')"
         class="text-sm transition-colors whitespace-nowrap"
-        :class="activeSection === 'works' ? 'text-indigo-500 dark:text-indigo-400 font-semibold' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'"
+        :class="activeSection === 'works' ? 'text-indigo-500 dark:text-indigo-400 font-semibold' : 'text-zinc-500 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white'"
         :aria-label="t.nav.works"
       >
         {{ t.nav.works }}
@@ -48,7 +48,7 @@ const scrollToSection = (id: string) => {
       <button
         @click="scrollToSection('contact')"
         class="text-sm transition-colors whitespace-nowrap"
-        :class="activeSection === 'contact' ? 'text-indigo-500 dark:text-indigo-400 font-semibold' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'"
+        :class="activeSection === 'contact' ? 'text-indigo-500 dark:text-indigo-400 font-semibold' : 'text-zinc-500 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white'"
         :aria-label="t.nav.contact"
       >
         {{ t.nav.contact }}

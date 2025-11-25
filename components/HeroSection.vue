@@ -9,7 +9,8 @@
       <p class="text-2xl md:text-4xl text-zinc-600 dark:text-zinc-400 max-w-3xl font-light tracking-wide mx-auto">
         {{ t.hero.subtitle }}
       </p>
-      <div class="pt-8 flex gap-6 justify-center w-full">
+      <!-- Centered Button Container -->
+      <div class="pt-8 w-full flex flex-col items-center justify-center">
         <a href="#works" class="group relative px-8 py-4 bg-zinc-900 hover:bg-zinc-800 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white rounded-full font-medium text-lg overflow-hidden transition-all hover:scale-105">
           <span class="relative z-10 transition-colors">{{ t.hero.cta }}</span>
         </a>
