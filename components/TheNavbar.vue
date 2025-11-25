@@ -16,7 +16,7 @@ const scrollToSection = (id: string) => {
 </script>
 
 <template>
-  <nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-8 px-6 py-3 rounded-full backdrop-blur-md transition-all duration-300 bg-white/80 border border-zinc-200/50 dark:bg-black/80 dark:border-none">
+  <nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-6 px-6 py-3 rounded-full backdrop-blur-xl transition-all duration-300 bg-white/70 border border-zinc-200/50 shadow-lg dark:bg-black/60 dark:border-zinc-700/50 dark:shadow-black/50">
     <!-- Logo / Home -->
     <button
       @click="scrollToSection('home')"

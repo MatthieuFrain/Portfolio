@@ -9,7 +9,7 @@ const toggleDark = useToggle(isDark)
 </script>
 
 <template>
-  <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-2 py-2 rounded-full backdrop-blur-md transition-all duration-300 bg-white/80 border border-zinc-200/50 dark:bg-black/80 dark:border-none">
+  <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-2 py-2 rounded-full backdrop-blur-xl transition-all duration-300 bg-white/70 border border-zinc-200/50 shadow-lg dark:bg-black/60 dark:border-zinc-700/50 dark:shadow-black/50">
     <ClientOnly>
       <!-- Language Switcher -->
       <button
