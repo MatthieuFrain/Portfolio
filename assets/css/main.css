@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  @apply bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white antialiased transition-colors duration-300;
+html, body {
+  @apply overflow-x-hidden w-full bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50;
 }

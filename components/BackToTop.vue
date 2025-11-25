@@ -14,7 +14,7 @@ const scrollToTop = () => {
     <button
       v-if="y > 300"
       @click="scrollToTop"
-      class="fixed bottom-6 right-6 z-40 p-3 rounded-full glass-panel text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-all hover:scale-110"
+      class="fixed bottom-6 right-6 z-40 p-3 rounded-full glass-panel text-zinc-600 dark:text-white bg-white dark:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white transition-all hover:scale-110"
       aria-label="Back to top"
     >
       <ArrowUp class="w-5 h-5" />
@@ -24,14 +24,12 @@ const scrollToTop = () => {
 
 <style scoped>
 .glass-panel {
-  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(12px);
   border: 1px solid #e4e4e7;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 :global(.dark) .glass-panel {
-  background: rgba(24, 24, 27, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 

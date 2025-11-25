@@ -1,37 +1,18 @@
 <script setup lang="ts">
 import { useTranslation } from '~/composables/useTranslation'
-import { ref, onMounted } from 'vue'
-import { useIntersectionObserver } from '@vueuse/core'
 
 const { t } = useTranslation()
-const activeSection = ref('home')
+
+defineProps<{
+  activeSection: string
+}>()
 
 const scrollToSection = (id: string) => {
   const element = document.getElementById(id)
   if (element) {
     element.scrollIntoView({ behavior: 'smooth' })
-    activeSection.value = id
   }
 }
-
-onMounted(() => {
-  const sections = ['home', 'dna', 'works', 'contact']
-
-  sections.forEach(id => {
-    const element = document.getElementById(id)
-    if (element) {
-      useIntersectionObserver(
-        element,
-        ([{ isIntersecting }]) => {
-          if (isIntersecting) {
-            activeSection.value = id
-          }
-        },
-        { threshold: 0.5 }
-      )
-    }
-  })
-})
 </script>
 
 <template>
@@ -41,7 +22,7 @@ onMounted(() => {
       <button
         @click="scrollToSection('home')"
         class="text-sm font-medium transition-colors whitespace-nowrap"
-        :class="activeSection === 'home' ? 'text-indigo-500 font-semibold' : 'text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white'"
+        :class="activeSection === 'home' ? 'text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'"
       >
         {{ t.nav.home }}
       </button>
@@ -51,21 +32,21 @@ onMounted(() => {
         <button
           @click="scrollToSection('dna')"
           class="text-sm transition-colors whitespace-nowrap"
-          :class="activeSection === 'dna' ? 'text-indigo-500 font-semibold' : 'text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white'"
+          :class="activeSection === 'dna' ? 'text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'"
         >
           {{ t.nav.dna }}
         </button>
         <button
           @click="scrollToSection('works')"
           class="text-sm transition-colors whitespace-nowrap"
-          :class="activeSection === 'works' ? 'text-indigo-500 font-semibold' : 'text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white'"
+          :class="activeSection === 'works' ? 'text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'"
         >
           {{ t.nav.works }}
         </button>
         <button
           @click="scrollToSection('contact')"
           class="text-sm transition-colors whitespace-nowrap"
-          :class="activeSection === 'contact' ? 'text-indigo-500 font-semibold' : 'text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white'"
+          :class="activeSection === 'contact' ? 'text-indigo-600 dark:text-indigo-400 font-semibold' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'"
         >
           {{ t.nav.contact }}
         </button>
@@ -76,16 +57,15 @@ onMounted(() => {
 
 <style scoped>
 .glass-panel {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(12px);
-  border: 1px solid #e4e4e7; /* border-zinc-200 */
+  border: 1px solid rgba(228, 228, 231, 0.5); /* border-zinc-200/50 */
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 :global(.dark) .glass-panel {
-  background: rgba(24, 24, 27, 0.9); /* bg-zinc-900/90 */
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-color: #27272a; /* border-zinc-800 */
+  background: rgba(24, 24, 27, 0.8); /* bg-zinc-900/80 */
+  border: 1px solid rgba(39, 39, 42, 0.5); /* border-zinc-800/50 */
 }
 
 .no-scrollbar::-webkit-scrollbar {

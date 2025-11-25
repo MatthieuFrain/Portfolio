@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { useDark } from '@vueuse/core'
+import { useDark, useIntersectionObserver } from '@vueuse/core'
+import { ref, onMounted } from 'vue'
 
 // SEO Metadata
 useSeoMeta({
@@ -12,8 +13,28 @@ useSeoMeta({
 })
 
 // Initialize Dark Mode
-// This automatically binds class="dark" to the html tag
 const isDark = useDark()
+
+// Scroll Spy Logic
+const activeSection = ref('home')
+const sectionIds = ['home', 'dna', 'works', 'contact']
+
+onMounted(() => {
+  sectionIds.forEach(id => {
+    const element = document.getElementById(id)
+    if (element) {
+      useIntersectionObserver(
+        element,
+        ([{ isIntersecting }]) => {
+          if (isIntersecting) {
+            activeSection.value = id
+          }
+        },
+        { threshold: 0.25 } // Trigger when 25% of section is visible
+      )
+    }
+  })
+})
 </script>
 
 <template>
@@ -24,32 +45,32 @@ const isDark = useDark()
     </ClientOnly>
 
     <!-- Navigation -->
-    <TheNavbar />
+    <TheNavbar :active-section="activeSection" />
     <TheControls />
 
     <!-- Main Content -->
     <main>
-      <HeroSection id="home" />
-      <BentoGrid id="dna" />
-      <SelectedWorks />
+      <div id="home">
+        <HeroSection />
+      </div>
+
+      <div id="dna">
+        <BentoGrid />
+      </div>
+
+      <div id="works">
+        <SelectedWorks />
+      </div>
     </main>
 
     <!-- Footer -->
-    <TheFooter />
+    <div id="contact">
+      <TheFooter />
+    </div>
 
     <!-- Back To Top -->
     <ClientOnly>
-      <BackToTop class="dark:bg-zinc-800 dark:text-white" />
+      <BackToTop />
     </ClientOnly>
   </div>
 </template>
-
-<style>
-html, body {
-  @apply min-h-screen overflow-x-hidden bg-zinc-50 dark:bg-zinc-950;
-}
-
-html.dark body {
-  background-color: #09090b;
-}
-</style>
