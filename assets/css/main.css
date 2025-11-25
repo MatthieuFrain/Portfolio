@@ -2,22 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Force background on HTML to kill white borders on iOS overscroll */
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  overflow-x: hidden;
-  background-color: #09090b; /* Zinc-950 matches dark theme */
+:root {
+  color-scheme: light dark; /* Tells browser to use dark scrollbars/overscroll */
 }
 
-html.light {
-  background-color: #fafafa; /* Zinc-50 */
+html {
+  background-color: #09090b; /* Zinc-950 */
+  overflow-x: hidden;
+  width: 100vw;
 }
 
 body {
   @apply bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50;
-  min-height: 100vh;
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
 }
 
 /* Ensure Nuxt root covers everything */
