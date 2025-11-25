@@ -72,35 +72,35 @@ onMounted(() => {
   <div class="relative min-h-screen w-full overflow-hidden">
     <!-- Custom Cursor -->
     <ClientOnly>
-      <CustomCursor />
+      <UiCustomCursor />
     </ClientOnly>
 
     <!-- Navigation -->
-    <TheNavbar :active-section="activeSection" />
+    <LayoutTheNavbar :active-section="activeSection" />
 
     <!-- Sections -->
     <div id="home">
-      <HeroSection />
+      <SectionsHeroSection />
     </div>
 
     <div id="dna">
-      <BentoGrid />
+      <SectionsTheDNA />
     </div>
 
     <div id="works">
-      <SelectedWorks />
+      <SectionsSelectedWorks />
     </div>
 
     <div id="contact">
-      <TheFooter />
+      <LayoutTheFooter />
     </div>
 
     <!-- Controls (Theme/Lang) -->
-    <TheControls />
+    <LayoutTheControls />
 
     <!-- Back To Top -->
     <ClientOnly>
-      <BackToTop />
+      <UiBackToTop />
     </ClientOnly>
   </div>
 </template>
