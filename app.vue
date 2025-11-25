@@ -18,6 +18,7 @@ useSeoMeta({
     </ClientOnly>
 
     <!-- Navigation -->
+    <TheHeader />
     <TheNavbar />
 
     <!-- Main Content -->

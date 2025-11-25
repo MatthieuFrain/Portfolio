@@ -15,9 +15,12 @@
           </p>
         </div>
       </div>
-      <div class="relative group">
-        <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-violet-500 rounded-lg blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
-        <div class="relative bg-slate-800 rounded-lg p-8 border border-slate-700">
+
+      <!-- Mobile: Horizontal Carousel / Desktop: Grid -->
+      <div class="relative group overflow-x-auto md:overflow-visible snap-x snap-mandatory flex md:block gap-4 pb-4 md:pb-0 no-scrollbar">
+        <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-violet-500 rounded-lg blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200 hidden md:block"></div>
+
+        <div class="relative bg-slate-800 rounded-lg p-8 border border-slate-700 min-w-[85vw] md:min-w-0 snap-center">
           <h3 class="text-xl font-semibold text-white mb-4">My Stack</h3>
           <ul class="grid grid-cols-2 gap-4">
             <li class="flex items-center space-x-2 text-slate-300">
@@ -42,3 +45,13 @@
     </div>
   </section>
 </template>
+
+<style scoped>
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+</style>

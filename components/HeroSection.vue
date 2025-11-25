@@ -1,5 +1,5 @@
 <template>
-  <section class="min-h-screen flex flex-col justify-center items-start px-6 md:px-20 max-w-7xl mx-auto pt-32">
+  <section class="min-h-screen flex flex-col justify-center items-center md:items-start px-6 md:px-20 max-w-7xl mx-auto pt-32 text-center md:text-left">
     <div class="space-y-8 animate-fade-in-up">
       <h1 class="font-display text-6xl md:text-9xl font-bold tracking-tighter leading-none whitespace-pre-line">
         <span class="block text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-violet-400 to-blue-400 animate-aurora bg-[length:200%_auto]">

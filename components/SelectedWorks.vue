@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { useTranslation } from '~/composables/useTranslation'
+import VueEasyLightbox from 'vue-easy-lightbox'
+import { ref, computed } from 'vue'
 
 const { t } = useTranslation()
 
@@ -23,6 +25,20 @@ const projects = [
     link: '#'
   }
 ]
+
+// Lightbox Logic
+const visibleRef = ref(false)
+const indexRef = ref(0)
+const imgsRef = computed(() => projects.map(p => p.image))
+
+const showImg = (index: number) => {
+  indexRef.value = index
+  visibleRef.value = true
+}
+
+const onHide = () => {
+  visibleRef.value = false
+}
 </script>
 
 <template>
@@ -41,10 +57,11 @@ const projects = [
       <!-- Projects Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <div
-          v-for="project in projects"
+          v-for="(project, index) in projects"
           :key="project.id"
-          class="group relative"
+          class="group relative cursor-pointer"
           v-motion-slide-visible-bottom
+          @click="showImg(index)"
         >
           <!-- Card Container -->
           <div class="relative overflow-hidden rounded-2xl bg-zinc-900 border border-white/5">
@@ -74,5 +91,15 @@ const projects = [
         </div>
       </div>
     </div>
+
+    <!-- Lightbox Component -->
+    <ClientOnly>
+      <VueEasyLightbox
+        :visible="visibleRef"
+        :imgs="imgsRef"
+        :index="indexRef"
+        @hide="onHide"
+      />
+    </ClientOnly>
   </section>
 </template>

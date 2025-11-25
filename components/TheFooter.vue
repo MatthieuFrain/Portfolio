@@ -68,7 +68,7 @@ const socialLinks = [
       <div class="mt-24 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-zinc-500">
         <p>© {{ new Date().getFullYear() }} {{ t.footer.copyright }}</p>
         <div class="flex gap-6">
-          <NuxtLink to="/sitemap.xml" class="hover:text-zinc-300 transition-colors">Sitemap</NuxtLink>
+          <!-- <NuxtLink to="/sitemap.xml" class="hover:text-zinc-300 transition-colors">Sitemap</NuxtLink> -->
         </div>
       </div>
     </div>
