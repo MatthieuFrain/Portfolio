@@ -25,27 +25,23 @@ const checkActiveSection = () => {
   }
 
   // 2. Force 'Contact' if at bottom
+  // We use a small buffer (50px) to ensure it triggers even if not pixel perfect
   const documentHeight = document.documentElement.scrollHeight
   if (y.value + windowHeight.value >= documentHeight - 50) {
     activeSection.value = 'contact'
     return
   }
 
-  // 3. Middle Sections Logic
+  // 3. Middle Sections Logic (DNA vs Works)
   const sections = ['dna', 'works']
   let maxVisibility = 0
   let currentSection = activeSection.value
-
-  // If we are not at home or contact, default to keeping current or finding best match
-  // We only check dna and works here because home and contact are handled by edge cases
-
-  // However, if we scrolled past home but not at bottom, we need to decide between dna and works.
-  // Let's check which one is most visible.
 
   for (const id of sections) {
     const element = document.getElementById(id)
     if (element) {
       const rect = element.getBoundingClientRect()
+      // Calculate how much of the element is visible in the viewport
       const visibleHeight = Math.min(rect.bottom, windowHeight.value) - Math.max(rect.top, 0)
 
       if (visibleHeight > maxVisibility && visibleHeight > 0) {
@@ -55,16 +51,18 @@ const checkActiveSection = () => {
     }
   }
 
-  // Only update if we found a clearly visible section, otherwise keep current (unless it was home/contact which are handled)
+  // Only update if we found a clearly visible section
   if (maxVisibility > 0) {
     activeSection.value = currentSection
   }
 }
 
+// Watch for scroll and resize events
 watch([y, windowHeight], () => {
   checkActiveSection()
 })
 
+// Initial check
 onMounted(() => {
   checkActiveSection()
 })
@@ -72,12 +70,15 @@ onMounted(() => {
 
 <template>
   <div class="relative min-h-screen w-full overflow-hidden">
+    <!-- Custom Cursor -->
     <ClientOnly>
       <CustomCursor />
     </ClientOnly>
 
+    <!-- Navigation -->
     <TheNavbar :active-section="activeSection" />
 
+    <!-- Sections -->
     <div id="home">
       <HeroSection />
     </div>
@@ -94,8 +95,10 @@ onMounted(() => {
       <TheFooter />
     </div>
 
+    <!-- Controls (Theme/Lang) -->
     <TheControls />
 
+    <!-- Back To Top -->
     <ClientOnly>
       <BackToTop />
     </ClientOnly>

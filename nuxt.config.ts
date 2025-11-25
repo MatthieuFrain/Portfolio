@@ -17,7 +17,7 @@ export default defineNuxtConfig({
     '@nuxtjs/sitemap',
   ],
 
-  // Site configuration
+  // Site configuration for Sitemap
   site: {
     url: 'https://www.matthieufrain.dev',
   },

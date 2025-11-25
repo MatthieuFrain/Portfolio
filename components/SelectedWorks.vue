@@ -53,10 +53,13 @@ const projects = [
                 :class="projects[0].aspect"
               />
             </div>
-            <!-- Text Area -->
+            <!-- Text Area (Below Image) -->
             <div class="p-8">
               <div class="flex justify-between items-start mb-4">
                 <span class="text-indigo-500 dark:text-indigo-400 text-sm font-medium tracking-wide uppercase">{{ t.works[projects[0].key].tag }}</span>
+                <div class="bg-zinc-200 dark:bg-zinc-800 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <ArrowUpRight class="w-5 h-5 text-zinc-900 dark:text-white" />
+                </div>
               </div>
               <h3 class="text-3xl font-bold text-zinc-900 dark:text-white mb-3">{{ t.works[projects[0].key].title }}</h3>
               <p class="text-zinc-600 dark:text-zinc-400 text-lg leading-relaxed">
@@ -83,6 +86,9 @@ const projects = [
             <div class="p-8">
               <div class="flex justify-between items-start mb-4">
                 <span class="text-indigo-500 dark:text-indigo-400 text-sm font-medium tracking-wide uppercase">{{ t.works[projects[1].key].tag }}</span>
+                <div class="bg-zinc-200 dark:bg-zinc-800 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <ArrowUpRight class="w-5 h-5 text-zinc-900 dark:text-white" />
+                </div>
               </div>
               <h3 class="text-2xl font-bold text-zinc-900 dark:text-white mb-3">{{ t.works[projects[1].key].title }}</h3>
               <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">
@@ -106,6 +112,9 @@ const projects = [
             <div class="p-8">
               <div class="flex justify-between items-start mb-4">
                 <span class="text-indigo-500 dark:text-indigo-400 text-sm font-medium tracking-wide uppercase">{{ t.works[projects[2].key].tag }}</span>
+                <div class="bg-zinc-200 dark:bg-zinc-800 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <ArrowUpRight class="w-5 h-5 text-zinc-900 dark:text-white" />
+                </div>
               </div>
               <h3 class="text-2xl font-bold text-zinc-900 dark:text-white mb-3">{{ t.works[projects[2].key].title }}</h3>
               <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">

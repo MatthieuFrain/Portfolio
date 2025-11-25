@@ -2,14 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+/* THE WHITE BORDER KILLER */
 :root {
-  color-scheme: light dark; /* Tells browser to use dark scrollbars/overscroll */
+  color-scheme: light dark;
 }
 
 html {
-  background-color: #09090b; /* Zinc-950 */
+  background-color: #09090b; /* Zinc-950 - Default to dark to prevent flash */
   overflow-x: hidden;
   width: 100vw;
+}
+
+html.light {
+  background-color: #fafafa; /* Zinc-50 */
 }
 
 body {
@@ -17,10 +22,23 @@ body {
   overflow-x: hidden;
   width: 100%;
   position: relative;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Ensure Nuxt root covers everything */
 #__nuxt {
   min-height: 100vh;
   width: 100%;
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection Color */
+::selection {
+  @apply bg-indigo-500/30 text-indigo-600 dark:text-indigo-200;
 }
