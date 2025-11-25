@@ -28,7 +28,7 @@ const socialLinks = [
 
 <template>
   <footer id="contact" class="py-24 border-t border-zinc-200 dark:border-zinc-800 relative z-10 bg-zinc-100 dark:bg-zinc-950 transition-colors">
-    <div class="container mx-auto px-4">
+    <div class="max-w-7xl w-full mx-auto px-6">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
         <!-- CTA Section -->
         <div>

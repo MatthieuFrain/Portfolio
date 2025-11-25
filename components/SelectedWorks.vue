@@ -46,7 +46,7 @@ const currentProject = computed(() => projects[indexRef.value])
 
 <template>
   <section id="works" class="py-32 relative z-10">
-    <div class="max-w-7xl mx-auto px-6">
+    <div class="max-w-7xl w-full mx-auto px-6">
       <!-- Section Header -->
       <div class="mb-16">
         <h2 class="text-4xl md:text-6xl font-display font-bold mb-6">

@@ -3,9 +3,12 @@
 @tailwind utilities;
 
 /* Force background on HTML to kill white borders on iOS overscroll */
-html {
-  background-color: #09090b; /* Zinc-950 */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
   overflow-x: hidden;
+  background-color: #09090b; /* Zinc-950 matches dark theme */
 }
 
 html.light {
@@ -15,8 +18,6 @@ html.light {
 body {
   @apply bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50;
   min-height: 100vh;
-  width: 100%;
-  overflow-x: hidden;
 }
 
 /* Ensure Nuxt root covers everything */

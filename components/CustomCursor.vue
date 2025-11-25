@@ -28,11 +28,11 @@ const animate = () => {
   dotY += (mouseY - dotY) * 0.5
 
   if (cursor.value) {
-    cursor.value.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0)`
+    cursor.value.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0) translate(-50%, -50%)`
   }
 
   if (cursorDot.value) {
-    cursorDot.value.style.transform = `translate3d(${dotX}px, ${dotY}px, 0)`
+    cursorDot.value.style.transform = `translate3d(${dotX}px, ${dotY}px, 0) translate(-50%, -50%)`
   }
 
   requestAnimationFrame(animate)
@@ -53,13 +53,13 @@ onUnmounted(() => {
     <!-- Main Circle -->
     <div
       ref="cursor"
-      class="fixed top-0 left-0 w-8 h-8 border border-white rounded-full -translate-x-1/2 -translate-y-1/2 will-change-transform"
+      class="fixed top-0 left-0 w-8 h-8 border border-white rounded-full will-change-transform"
     ></div>
 
     <!-- Center Dot -->
     <div
       ref="cursorDot"
-      class="fixed top-0 left-0 w-1 h-1 bg-white rounded-full -translate-x-1/2 -translate-y-1/2 will-change-transform"
+      class="fixed top-0 left-0 w-1 h-1 bg-white rounded-full will-change-transform"
     ></div>
   </div>
 </template>

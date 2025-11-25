@@ -1,5 +1,5 @@
 <template>
-  <section id="dna" class="py-20 px-6 md:px-20 max-w-7xl mx-auto">
+  <section id="dna" class="py-20 px-6 max-w-7xl w-full mx-auto">
     <h2 class="font-display text-4xl md:text-6xl font-bold text-zinc-900 dark:text-white mb-12 tracking-tight">{{ t.about.title }}</h2>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[300px]">
