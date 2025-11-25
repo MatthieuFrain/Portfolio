@@ -17,6 +17,10 @@ export default defineNuxtConfig({
   site: {
     url: 'https://www.matthieufrain.dev',
   },
+  nitro: {
+    preset: 'vercel',
+  },
+  compatibilityDate: '2024-11-25',
   app: {
     head: {
       title: 'Matthieu Frain | Creative Developer',

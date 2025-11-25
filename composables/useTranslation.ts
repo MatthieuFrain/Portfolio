@@ -1,7 +1,7 @@
-import { useState } from '#app'
+import { useState, computed } from '#app'
 
 export const useTranslation = () => {
-  const locale = useState('locale', () => 'en')
+  const locale = useState<string>('locale', () => 'en')
 
   const toggleLocale = () => {
     locale.value = locale.value === 'en' ? 'fr' : 'en'
@@ -122,9 +122,11 @@ export const useTranslation = () => {
     },
   }
 
+  const t = computed(() => dict[locale.value as keyof typeof dict])
+
   return {
     locale,
     toggleLocale,
-    t: dict,
+    t,
   }
 }
