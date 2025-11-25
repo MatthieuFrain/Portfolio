@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useTranslation } from '~/composables/useTranslation'
 import { useDark, useToggle } from '@vueuse/core'
+import { Sun, Moon } from 'lucide-vue-next'
 
 const { locale, toggleLocale } = useTranslation()
 const isDark = useDark()
@@ -8,7 +9,7 @@ const toggleDark = useToggle(isDark)
 </script>
 
 <template>
-  <div class="fixed bottom-6 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:bottom-auto md:top-6 md:right-6 z-50 flex items-center pointer-events-none">
+  <div class="fixed bottom-4 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:bottom-auto md:top-6 md:right-6 z-50 flex items-center pointer-events-none">
     <div class="glass-panel px-4 py-2 rounded-full flex items-center gap-4 pointer-events-auto">
       <ClientOnly>
         <!-- Language Switcher -->
@@ -28,7 +29,8 @@ const toggleDark = useToggle(isDark)
           class="p-1 rounded-full hover:bg-white/10 transition-colors text-zinc-900 dark:text-white"
           aria-label="Toggle Theme"
         >
-          <component :is="isDark ? 'LucideMoon' : 'LucideSun'" class="w-4 h-4" />
+          <Sun class="h-5 w-5 dark:hidden" />
+          <Moon class="h-5 w-5 hidden dark:block text-white" />
         </button>
       </ClientOnly>
     </div>
@@ -37,14 +39,14 @@ const toggleDark = useToggle(isDark)
 
 <style scoped>
 .glass-panel {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(12px);
   border: 1px solid #e4e4e7; /* border-zinc-200 */
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 :global(.dark) .glass-panel {
-  background: rgba(24, 24, 27, 0.8); /* bg-zinc-950/80 */
+  background: rgba(24, 24, 27, 0.9); /* bg-zinc-900/90 */
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-color: #27272a; /* border-zinc-800 */
 }

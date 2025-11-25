@@ -39,7 +39,7 @@ const isDark = useDark()
 
     <!-- Back To Top -->
     <ClientOnly>
-      <BackToTop />
+      <BackToTop class="dark:bg-zinc-800 dark:text-white" />
     </ClientOnly>
   </div>
 </template>
@@ -47,5 +47,9 @@ const isDark = useDark()
 <style>
 html, body {
   @apply min-h-screen overflow-x-hidden bg-zinc-50 dark:bg-zinc-950;
+}
+
+html.dark body {
+  background-color: #09090b;
 }
 </style>
