@@ -29,12 +29,23 @@ const isDark = useDark()
 
     <!-- Main Content -->
     <main>
-      <HeroSection />
-      <BentoGrid />
+      <HeroSection id="home" />
+      <BentoGrid id="dna" />
       <SelectedWorks />
     </main>
 
     <!-- Footer -->
     <TheFooter />
+
+    <!-- Back To Top -->
+    <ClientOnly>
+      <BackToTop />
+    </ClientOnly>
   </div>
 </template>
+
+<style>
+html, body {
+  @apply min-h-screen overflow-x-hidden bg-zinc-50 dark:bg-zinc-950;
+}
+</style>

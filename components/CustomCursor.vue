@@ -27,13 +27,13 @@ onUnmounted(() => {
     <!-- Main Circle -->
     <div
       ref="cursor"
-      class="fixed top-0 left-0 w-8 h-8 border border-white/20 rounded-full -translate-x-1/2 -translate-y-1/2 transition-transform duration-100 ease-out will-change-transform"
+      class="fixed top-0 left-0 w-8 h-8 border border-white/20 rounded-full -translate-x-1/2 -translate-y-1/2 transition-transform duration-150 ease-out will-change-transform"
     ></div>
 
     <!-- Center Dot -->
     <div
       ref="cursorDot"
-      class="fixed top-0 left-0 w-1 h-1 bg-white rounded-full -translate-x-1/2 -translate-y-1/2 will-change-transform"
+      class="fixed top-0 left-0 w-1 h-1 bg-zinc-900 dark:bg-indigo-500 rounded-full -translate-x-1/2 -translate-y-1/2 transition-transform duration-100 ease-out will-change-transform"
     ></div>
   </div>
 </template>

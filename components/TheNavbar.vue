@@ -46,7 +46,7 @@ onUnmounted(() => {
       <button
         @click="scrollToSection('home')"
         class="text-sm font-medium transition-colors whitespace-nowrap"
-        :class="activeSection === 'home' ? 'text-indigo-500' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'"
+        :class="activeSection === 'home' ? 'text-indigo-500' : 'text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white'"
       >
         {{ t.nav.home }}
       </button>
@@ -56,21 +56,21 @@ onUnmounted(() => {
         <button
           @click="scrollToSection('about')"
           class="text-sm transition-colors whitespace-nowrap"
-          :class="activeSection === 'about' ? 'text-indigo-500' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'"
+          :class="activeSection === 'about' ? 'text-indigo-500' : 'text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white'"
         >
           {{ t.nav.dna }}
         </button>
         <button
           @click="scrollToSection('works')"
           class="text-sm transition-colors whitespace-nowrap"
-          :class="activeSection === 'works' ? 'text-indigo-500' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'"
+          :class="activeSection === 'works' ? 'text-indigo-500' : 'text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white'"
         >
           {{ t.nav.works }}
         </button>
         <button
           @click="scrollToSection('contact')"
           class="text-sm transition-colors whitespace-nowrap"
-          :class="activeSection === 'contact' ? 'text-indigo-500' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'"
+          :class="activeSection === 'contact' ? 'text-indigo-500' : 'text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white'"
         >
           {{ t.nav.contact }}
         </button>
@@ -88,8 +88,9 @@ onUnmounted(() => {
 }
 
 :global(.dark) .glass-panel {
-  background: rgba(24, 24, 27, 0.8); /* bg-zinc-900 */
+  background: rgba(24, 24, 27, 0.8); /* bg-zinc-950/80 */
   border: 1px solid rgba(255, 255, 255, 0.05);
+  border-color: #27272a; /* border-zinc-800 */
 }
 
 .no-scrollbar::-webkit-scrollbar {

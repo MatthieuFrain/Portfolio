@@ -14,18 +14,18 @@ const toggleDark = useToggle(isDark)
         <!-- Language Switcher -->
         <button
           @click="toggleLocale"
-          class="text-xs font-medium px-2 py-1 rounded hover:bg-white/10 transition-colors text-zinc-500 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white"
+          class="text-xs font-medium px-2 py-1 rounded hover:bg-white/10 transition-colors text-zinc-900 dark:text-white"
         >
           {{ locale === 'en' ? 'FR' : 'EN' }}
         </button>
 
         <!-- Divider -->
-        <div class="w-px h-3 bg-zinc-200 dark:bg-white/10"></div>
+        <div class="w-px h-3 bg-zinc-200 dark:bg-zinc-800"></div>
 
         <!-- Theme Toggle -->
         <button
           @click="toggleDark()"
-          class="p-1 rounded-full hover:bg-white/10 transition-colors text-zinc-500 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white"
+          class="p-1 rounded-full hover:bg-white/10 transition-colors text-zinc-900 dark:text-white"
           aria-label="Toggle Theme"
         >
           <component :is="isDark ? 'LucideMoon' : 'LucideSun'" class="w-4 h-4" />
@@ -44,7 +44,8 @@ const toggleDark = useToggle(isDark)
 }
 
 :global(.dark) .glass-panel {
-  background: rgba(24, 24, 27, 0.8); /* bg-zinc-900 */
+  background: rgba(24, 24, 27, 0.8); /* bg-zinc-950/80 */
   border: 1px solid rgba(255, 255, 255, 0.05);
+  border-color: #27272a; /* border-zinc-800 */
 }
 </style>
