@@ -16,12 +16,6 @@
     },
     {
       "headers": {
-        "Content-Type": "application/xslt+xml"
-      },
-      "src": "/sitemap.xsl"
-    },
-    {
-      "headers": {
         "cache-control": "public, max-age=31536000, immutable"
       },
       "src": "/_nuxt/(.*)"
@@ -53,10 +47,6 @@
     {
       "src": "(?<url>/__nuxt_error)",
       "dest": "/__fallback"
-    },
-    {
-      "src": "(?<url>/sitemap.xml)",
-      "dest": "/sitemap.xml-isr?url=$url"
     },
     {
       "src": "/(.*)",

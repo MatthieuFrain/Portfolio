@@ -1,35 +1,40 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  // Enable Server-Side Rendering
+  ssr: true,
+
+  // Enable devtools
   devtools: { enabled: true },
+
+  // Global CSS
   css: ['~/assets/css/main.css'],
-  postcss: {
-    plugins: {
-      tailwindcss: {},
-      autoprefixer: {},
-    },
-  },
+
+  // Modules
   modules: [
     '@nuxtjs/tailwindcss',
-    '@vueuse/nuxt',
     '@vueuse/motion/nuxt',
+    '@vueuse/nuxt',
     '@nuxtjs/sitemap',
   ],
+
+  // Site configuration
   site: {
     url: 'https://www.matthieufrain.dev',
   },
+
+  // Nitro configuration
   nitro: {
     preset: 'vercel',
   },
+
+  // Compatibility date
   compatibilityDate: '2024-11-25',
+
+  // App Head Configuration
   app: {
     head: {
-      title: 'Matthieu Frain | Creative Developer',
-      meta: [
-        { charset: 'utf-8' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Portfolio of Matthieu Frain, a Creative Developer & SEO Specialist crafting the future of digital experiences.' },
-        { name: 'theme-color', content: '#09090b' }
-      ],
+      charset: 'utf-8',
+      viewport: 'width=device-width, initial-scale=1',
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
         { rel: 'stylesheet', href: 'https://api.fontshare.com/v2/css?f[]=clash-display@200,300,400,500,600,700&display=swap' },

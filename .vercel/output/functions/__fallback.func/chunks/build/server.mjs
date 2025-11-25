@@ -1,12 +1,11 @@
-import { hasInjectionContext, getCurrentInstance, inject, ref, watchEffect, watch, unref, version, defineComponent, provide, createElementBlock, useSlots, h, Fragment, createApp, reactive, computed, toRaw, toRef as toRef$1, onErrorCaptured, onServerPrefetch, createVNode, resolveDynamicComponent, shallowReactive, effectScope, isReadonly, isReactive, isRef, isShallow, defineAsyncComponent, mergeProps, getCurrentScope, resolveDirective, onScopeDispose, readonly, customRef, shallowRef, nextTick, useSSRContext } from 'vue';
-import { i as hasProtocol, j as isScriptProtocol, k as joinURL, w as withQuery, s as sanitizeStatusCode, l as getContext, $ as $fetch, m as baseURL, n as createHooks, c as createError$1, o as isEqual, q as stringifyParsedURL, r as stringifyQuery, t as parseQuery, v as toRouteMatcher, x as createRouter } from '../nitro/nitro.mjs';
-import { getActiveHead, CapoPlugin } from 'unhead';
-import { defineHeadPlugin, composableNames, unpackMeta } from '@unhead/shared';
+import process from 'node:process';globalThis._importMeta_=globalThis._importMeta_||{url:"file:///_entry.js",env:process.env};import { defineComponent, shallowRef, h, resolveComponent, computed, hasInjectionContext, inject, getCurrentInstance, useSlots, Fragment, createElementBlock, provide, cloneVNode, useSSRContext, createApp, reactive, toRaw, mergeProps, unref, resolveDirective, createVNode, resolveDynamicComponent, withCtx, createTextVNode, toRef as toRef$1, onErrorCaptured, onServerPrefetch, shallowReactive, effectScope, isReadonly, isRef, isShallow, isReactive, ref, watch, defineAsyncComponent, getCurrentScope, readonly, customRef, onMounted, nextTick, watchEffect, onScopeDispose, onUnmounted } from 'vue';
+import { p as parseQuery, h as hasProtocol, i as joinURL, w as withQuery, k as withTrailingSlash, l as withoutTrailingSlash, m as isScriptProtocol, s as sanitizeStatusCode, n as getContext, $ as $fetch, o as defu, q as createHooks, c as createError$1, r as isEqual, t as stringifyParsedURL, v as stringifyQuery, x as toRouteMatcher, y as createRouter } from '../nitro/nitro.mjs';
+import { u as useHead$1, h as headSymbol, b as baseURL, a as useSeoMeta$1 } from '../routes/renderer.mjs';
 import sync, { getFrameData } from 'framesync';
 import { inertia, animate, velocityPerSecond, cubicBezier, bounceOut, bounceInOut, bounceIn, anticipate, backOut, backInOut, backIn, circOut, circInOut, circIn, easeOut, easeInOut, easeIn, linear } from 'popmotion';
 import { number, complex, alpha, filter, px, progressPercentage, degrees, scale, color } from 'style-value-types';
-import { ssrRenderSuspense, ssrRenderComponent, ssrRenderVNode, ssrRenderAttrs, ssrRenderStyle, ssrRenderList, ssrRenderAttr, ssrInterpolate, ssrGetDirectiveProps } from 'vue/server-renderer';
-import { Home, Dna, Briefcase, Mail, Terminal, Layers, Activity, Cpu, Github, Linkedin } from 'lucide-vue-next';
+import { ssrRenderAttrs, ssrInterpolate, ssrRenderComponent, ssrRenderList, ssrRenderAttr, ssrGetDirectiveProps, ssrRenderVNode, ssrRenderSuspense } from 'vue/server-renderer';
+import { Mail, Github, Linkedin, Terminal, Layers, Activity, Cpu } from 'lucide-vue-next';
 import 'node:http';
 import 'node:https';
 import 'node:events';
@@ -14,13 +13,21 @@ import 'node:buffer';
 import 'node:fs';
 import 'node:path';
 import 'node:crypto';
+import 'vue-bundle-renderer/runtime';
+import 'unhead/server';
+import 'devalue';
+import 'unhead/plugins';
+import 'unhead/utils';
 
 if (!globalThis.$fetch) {
   globalThis.$fetch = $fetch.create({
     baseURL: baseURL()
   });
 }
-const nuxtLinkDefaults = { "componentName": "NuxtLink", "prefetch": true, "prefetchOn": { "visibility": true } };
+if (!("global" in globalThis)) {
+  globalThis.global = globalThis;
+}
+const nuxtLinkDefaults = { "componentName": "NuxtLink" };
 const appId = "nuxt-app";
 function getNuxtAppCtx(id = appId) {
   return getContext(id, {
@@ -37,13 +44,14 @@ function createNuxtApp(options) {
     globalName: "nuxt",
     versions: {
       get nuxt() {
-        return "3.13.0";
+        return "3.20.1";
       },
       get vue() {
         return nuxtApp.vueApp.version;
       }
     },
     payload: shallowReactive({
+      ...options.ssrContext?.payload || {},
       data: shallowReactive({}),
       state: reactive({}),
       once: /* @__PURE__ */ new Set(),
@@ -86,6 +94,15 @@ function createNuxtApp(options) {
   {
     nuxtApp.payload.serverRendered = true;
   }
+  if (nuxtApp.ssrContext) {
+    nuxtApp.payload.path = nuxtApp.ssrContext.url;
+    nuxtApp.ssrContext.nuxt = nuxtApp;
+    nuxtApp.ssrContext.payload = nuxtApp.payload;
+    nuxtApp.ssrContext.config = {
+      public: nuxtApp.ssrContext.runtimeConfig.public,
+      app: nuxtApp.ssrContext.runtimeConfig.app
+    };
+  }
   nuxtApp.hooks = createHooks();
   nuxtApp.hook = nuxtApp.hooks.hook;
   {
@@ -104,22 +121,6 @@ function createNuxtApp(options) {
   };
   defineGetter(nuxtApp.vueApp, "$nuxt", nuxtApp);
   defineGetter(nuxtApp.vueApp.config.globalProperties, "$nuxt", nuxtApp);
-  {
-    if (nuxtApp.ssrContext) {
-      nuxtApp.ssrContext.nuxt = nuxtApp;
-      nuxtApp.ssrContext._payloadReducers = {};
-      nuxtApp.payload.path = nuxtApp.ssrContext.url;
-    }
-    nuxtApp.ssrContext = nuxtApp.ssrContext || {};
-    if (nuxtApp.ssrContext.payload) {
-      Object.assign(nuxtApp.payload, nuxtApp.ssrContext.payload);
-    }
-    nuxtApp.ssrContext.payload = nuxtApp.payload;
-    nuxtApp.ssrContext.config = {
-      public: options.ssrContext.runtimeConfig.public,
-      app: options.ssrContext.runtimeConfig.app
-    };
-  }
   const runtimeConfig = options.ssrContext.runtimeConfig;
   nuxtApp.provide("config", runtimeConfig);
   return nuxtApp;
@@ -140,21 +141,19 @@ async function applyPlugin(nuxtApp, plugin) {
   }
 }
 async function applyPlugins(nuxtApp, plugins2) {
-  var _a, _b, _c, _d;
-  const resolvedPlugins = [];
+  const resolvedPlugins = /* @__PURE__ */ new Set();
   const unresolvedPlugins = [];
   const parallels = [];
-  const errors = [];
+  let error = void 0;
   let promiseDepth = 0;
   async function executePlugin(plugin) {
-    var _a2;
-    const unresolvedPluginsForThisPlugin = ((_a2 = plugin.dependsOn) == null ? void 0 : _a2.filter((name) => plugins2.some((p) => p._name === name) && !resolvedPlugins.includes(name))) ?? [];
+    const unresolvedPluginsForThisPlugin = plugin.dependsOn?.filter((name) => plugins2.some((p) => p._name === name) && !resolvedPlugins.has(name)) ?? [];
     if (unresolvedPluginsForThisPlugin.length > 0) {
       unresolvedPlugins.push([new Set(unresolvedPluginsForThisPlugin), plugin]);
     } else {
       const promise = applyPlugin(nuxtApp, plugin).then(async () => {
         if (plugin._name) {
-          resolvedPlugins.push(plugin._name);
+          resolvedPlugins.add(plugin._name);
           await Promise.all(unresolvedPlugins.map(async ([dependsOn, unexecutedPlugin]) => {
             if (dependsOn.has(plugin._name)) {
               dependsOn.delete(plugin._name);
@@ -165,22 +164,27 @@ async function applyPlugins(nuxtApp, plugins2) {
             }
           }));
         }
+      }).catch((e) => {
+        if (!plugin.parallel && !nuxtApp.payload.error) {
+          throw e;
+        }
+        error ||= e;
       });
       if (plugin.parallel) {
-        parallels.push(promise.catch((e) => errors.push(e)));
+        parallels.push(promise);
       } else {
         await promise;
       }
     }
   }
   for (const plugin of plugins2) {
-    if (((_a = nuxtApp.ssrContext) == null ? void 0 : _a.islandContext) && ((_b = plugin.env) == null ? void 0 : _b.islands) === false) {
+    if (nuxtApp.ssrContext?.islandContext && plugin.env?.islands === false) {
       continue;
     }
     registerPluginHooks(nuxtApp, plugin);
   }
   for (const plugin of plugins2) {
-    if (((_c = nuxtApp.ssrContext) == null ? void 0 : _c.islandContext) && ((_d = plugin.env) == null ? void 0 : _d.islands) === false) {
+    if (nuxtApp.ssrContext?.islandContext && plugin.env?.islands === false) {
       continue;
     }
     await executePlugin(plugin);
@@ -191,8 +195,8 @@ async function applyPlugins(nuxtApp, plugins2) {
       await Promise.all(parallels);
     }
   }
-  if (errors.length) {
-    throw errors[0];
+  if (error) {
+    throw nuxtApp.payload.error || error;
   }
 }
 // @__NO_SIDE_EFFECTS__
@@ -213,12 +217,11 @@ function callWithNuxt(nuxt, setup, args) {
   }
 }
 function tryUseNuxtApp(id) {
-  var _a;
   let nuxtAppInstance;
   if (hasInjectionContext()) {
-    nuxtAppInstance = (_a = getCurrentInstance()) == null ? void 0 : _a.appContext.app.$nuxt;
+    nuxtAppInstance = getCurrentInstance()?.appContext.app.$nuxt;
   }
-  nuxtAppInstance = nuxtAppInstance || getNuxtAppCtx(id).tryUse();
+  nuxtAppInstance ||= getNuxtAppCtx(id).tryUse();
   return nuxtAppInstance || null;
 }
 function useNuxtApp(id) {
@@ -238,9 +241,9 @@ function defineGetter(obj, key, val) {
   Object.defineProperty(obj, key, { get: () => val });
 }
 const PageRouteSymbol = Symbol("route");
+globalThis._importMeta_.url.replace(/\/app\/.*$/, "/");
 const useRouter = () => {
-  var _a;
-  return (_a = useNuxtApp()) == null ? void 0 : _a.$router;
+  return useNuxtApp()?.$router;
 };
 const useRoute = () => {
   if (hasInjectionContext()) {
@@ -262,15 +265,14 @@ const isProcessingMiddleware = () => {
   }
   return false;
 };
+const URL_QUOTE_RE = /"/g;
 const navigateTo = (to, options) => {
-  if (!to) {
-    to = "/";
-  }
+  to ||= "/";
   const toPath = typeof to === "string" ? to : "path" in to ? resolveRouteObject(to) : useRouter().resolve(to).href;
   const isExternalHost = hasProtocol(toPath, { acceptRelative: true });
-  const isExternal = (options == null ? void 0 : options.external) || isExternalHost;
+  const isExternal = options?.external || isExternalHost;
   if (isExternal) {
-    if (!(options == null ? void 0 : options.external)) {
+    if (!options?.external) {
       throw new Error("Navigating to an external URL is not allowed by default. Use `navigateTo(url, { external: true })`.");
     }
     const { protocol } = new URL(toPath, "http://localhost");
@@ -287,10 +289,10 @@ const navigateTo = (to, options) => {
       const location2 = isExternal ? toPath : joinURL((/* @__PURE__ */ useRuntimeConfig()).app.baseURL, fullPath);
       const redirect = async function(response) {
         await nuxtApp.callHook("app:redirected");
-        const encodedLoc = location2.replace(/"/g, "%22");
+        const encodedLoc = location2.replace(URL_QUOTE_RE, "%22");
         const encodedHeader = encodeURL(location2, isExternalHost);
         nuxtApp.ssrContext._renderResponse = {
-          statusCode: sanitizeStatusCode((options == null ? void 0 : options.redirectCode) || 302, 302),
+          statusCode: sanitizeStatusCode(options?.redirectCode || 302, 302),
           body: `<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=${encodedLoc}"></head></html>`,
           headers: { location: encodedHeader }
         };
@@ -308,7 +310,7 @@ const navigateTo = (to, options) => {
   }
   if (isExternal) {
     nuxtApp._scope.stop();
-    if (options == null ? void 0 : options.replace) {
+    if (options?.replace) {
       (void 0).replace(toPath);
     } else {
       (void 0).href = toPath;
@@ -322,7 +324,7 @@ const navigateTo = (to, options) => {
     }
     return Promise.resolve();
   }
-  return (options == null ? void 0 : options.replace) ? router.replace(to) : router.push(to);
+  return options?.replace ? router.replace(to) : router.push(to);
 };
 function resolveRouteObject(to) {
   return withQuery(to.path || "", to.query || {}) + (to.hash || "");
@@ -338,14 +340,13 @@ function encodeURL(location2, isExternalHost = false) {
   return url.toString();
 }
 const NUXT_ERROR_SIGNATURE = "__nuxt_error";
-const useError = () => toRef$1(useNuxtApp().payload, "error");
+const useError = /* @__NO_SIDE_EFFECTS__ */ () => toRef$1(useNuxtApp().payload, "error");
 const showError = (error) => {
   const nuxtError = createError(error);
   try {
-    const nuxtApp = useNuxtApp();
-    const error2 = useError();
+    const error2 = /* @__PURE__ */ useError();
     if (false) ;
-    error2.value = error2.value || nuxtError;
+    error2.value ||= nuxtError;
   } catch {
     throw nuxtError;
   }
@@ -361,266 +362,24 @@ const createError = (error) => {
   });
   return nuxtError;
 };
-version[0] === "3";
-function resolveUnref(r) {
-  return typeof r === "function" ? r() : unref(r);
-}
-function resolveUnrefHeadInput(ref2) {
-  if (ref2 instanceof Promise || ref2 instanceof Date || ref2 instanceof RegExp)
-    return ref2;
-  const root = resolveUnref(ref2);
-  if (!ref2 || !root)
-    return root;
-  if (Array.isArray(root))
-    return root.map((r) => resolveUnrefHeadInput(r));
-  if (typeof root === "object") {
-    const resolved = {};
-    for (const k in root) {
-      if (!Object.prototype.hasOwnProperty.call(root, k)) {
-        continue;
-      }
-      if (k === "titleTemplate" || k[0] === "o" && k[1] === "n") {
-        resolved[k] = unref(root[k]);
-        continue;
-      }
-      resolved[k] = resolveUnrefHeadInput(root[k]);
-    }
-    return resolved;
-  }
-  return root;
-}
-defineHeadPlugin({
-  hooks: {
-    "entries:resolve": (ctx) => {
-      for (const entry2 of ctx.entries)
-        entry2.resolvedInput = resolveUnrefHeadInput(entry2.input);
-    }
-  }
-});
-const headSymbol = "usehead";
-const _global$1 = typeof globalThis !== "undefined" ? globalThis : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
-const globalKey$2 = "__unhead_injection_handler__";
-function setHeadInjectionHandler(handler) {
-  _global$1[globalKey$2] = handler;
-}
-function injectHead() {
-  if (globalKey$2 in _global$1) {
-    return _global$1[globalKey$2]();
-  }
-  const head = inject(headSymbol);
-  return head || getActiveHead();
-}
-function useHead(input, options = {}) {
-  const head = options.head || injectHead();
-  if (head) {
-    if (!head.ssr)
-      return clientUseHead(head, input, options);
-    return head.push(input, options);
-  }
-}
-function clientUseHead(head, input, options = {}) {
-  const deactivated = ref(false);
-  const resolvedInput = ref({});
-  watchEffect(() => {
-    resolvedInput.value = deactivated.value ? {} : resolveUnrefHeadInput(input);
-  });
-  const entry2 = head.push(resolvedInput.value, options);
-  watch(resolvedInput, (e) => {
-    entry2.patch(e);
-  });
-  getCurrentInstance();
-  return entry2;
-}
-const coreComposableNames = [
-  "injectHead"
-];
-({
-  "@unhead/vue": [...coreComposableNames, ...composableNames]
-});
-function useSeoMeta(input, options) {
-  const { title, titleTemplate, ...meta } = input;
-  return useHead({
-    title,
-    titleTemplate,
-    // @ts-expect-error runtime type
-    _flatMeta: meta
-  }, {
-    ...options,
-    transform(t) {
-      const meta2 = unpackMeta({ ...t._flatMeta });
-      delete t._flatMeta;
-      return {
-        // @ts-expect-error runtime type
-        ...t,
-        meta: meta2
-      };
-    }
-  });
-}
-[CapoPlugin({ track: true })];
-const unhead_KgADcZ0jPj = /* @__PURE__ */ defineNuxtPlugin({
+const unhead_k2P3m_ZDyjlr2mMYnoDPwavjsDN8hBlk9cFai0bbopU = /* @__PURE__ */ defineNuxtPlugin({
   name: "nuxt:head",
   enforce: "pre",
   setup(nuxtApp) {
     const head = nuxtApp.ssrContext.head;
-    setHeadInjectionHandler(
-      // need a fresh instance of the nuxt app to avoid parallel requests interfering with each other
-      () => useNuxtApp().vueApp._context.provides.usehead
-    );
     nuxtApp.vueApp.use(head);
   }
 });
-function isPlainObject(value) {
-  if (value === null || typeof value !== "object") {
-    return false;
-  }
-  const prototype = Object.getPrototypeOf(value);
-  if (prototype !== null && prototype !== Object.prototype && Object.getPrototypeOf(prototype) !== null) {
-    return false;
-  }
-  if (Symbol.iterator in value) {
-    return false;
-  }
-  if (Symbol.toStringTag in value) {
-    return Object.prototype.toString.call(value) === "[object Module]";
-  }
-  return true;
-}
-function _defu(baseObject, defaults, namespace = ".", merger) {
-  if (!isPlainObject(defaults)) {
-    return _defu(baseObject, {}, namespace);
-  }
-  const object = Object.assign({}, defaults);
-  for (const key in baseObject) {
-    if (key === "__proto__" || key === "constructor") {
-      continue;
-    }
-    const value = baseObject[key];
-    if (value === null || value === void 0) {
-      continue;
-    }
-    if (Array.isArray(value) && Array.isArray(object[key])) {
-      object[key] = [...value, ...object[key]];
-    } else if (isPlainObject(value) && isPlainObject(object[key])) {
-      object[key] = _defu(
-        value,
-        object[key],
-        (namespace ? `${namespace}.` : "") + key.toString());
-    } else {
-      object[key] = value;
-    }
-  }
-  return object;
-}
-function createDefu(merger) {
-  return (...arguments_) => (
-    // eslint-disable-next-line unicorn/no-array-reduce
-    arguments_.reduce((p, c) => _defu(p, c, ""), {})
-  );
-}
-const defu = createDefu();
-async function getRouteRules(url) {
+async function getRouteRules(arg) {
+  const path = typeof arg === "string" ? arg : arg.path;
   {
+    useNuxtApp().ssrContext._preloadManifest = true;
     const _routeRulesMatcher = toRouteMatcher(
       createRouter({ routes: (/* @__PURE__ */ useRuntimeConfig()).nitro.routeRules })
     );
-    return defu({}, ..._routeRulesMatcher.matchAll(url).reverse());
+    return defu({}, ..._routeRulesMatcher.matchAll(path).reverse());
   }
 }
-function createContext(opts = {}) {
-  let currentInstance;
-  let isSingleton = false;
-  const checkConflict = (instance) => {
-    if (currentInstance && currentInstance !== instance) {
-      throw new Error("Context conflict");
-    }
-  };
-  let als;
-  if (opts.asyncContext) {
-    const _AsyncLocalStorage = opts.AsyncLocalStorage || globalThis.AsyncLocalStorage;
-    if (_AsyncLocalStorage) {
-      als = new _AsyncLocalStorage();
-    } else {
-      console.warn("[unctx] `AsyncLocalStorage` is not provided.");
-    }
-  }
-  const _getCurrentInstance = () => {
-    if (als) {
-      const instance = als.getStore();
-      if (instance !== void 0) {
-        return instance;
-      }
-    }
-    return currentInstance;
-  };
-  return {
-    use: () => {
-      const _instance = _getCurrentInstance();
-      if (_instance === void 0) {
-        throw new Error("Context is not available");
-      }
-      return _instance;
-    },
-    tryUse: () => {
-      return _getCurrentInstance();
-    },
-    set: (instance, replace) => {
-      if (!replace) {
-        checkConflict(instance);
-      }
-      currentInstance = instance;
-      isSingleton = true;
-    },
-    unset: () => {
-      currentInstance = void 0;
-      isSingleton = false;
-    },
-    call: (instance, callback) => {
-      checkConflict(instance);
-      currentInstance = instance;
-      try {
-        return als ? als.run(instance, callback) : callback();
-      } finally {
-        if (!isSingleton) {
-          currentInstance = void 0;
-        }
-      }
-    },
-    async callAsync(instance, callback) {
-      currentInstance = instance;
-      const onRestore = () => {
-        currentInstance = instance;
-      };
-      const onLeave = () => currentInstance === instance ? onRestore : void 0;
-      asyncHandlers.add(onLeave);
-      try {
-        const r = als ? als.run(instance, callback) : callback();
-        if (!isSingleton) {
-          currentInstance = void 0;
-        }
-        return await r;
-      } finally {
-        asyncHandlers.delete(onLeave);
-      }
-    }
-  };
-}
-function createNamespace(defaultOpts = {}) {
-  const contexts = {};
-  return {
-    get(key, opts = {}) {
-      if (!contexts[key]) {
-        contexts[key] = createContext({ ...defaultOpts, ...opts });
-      }
-      return contexts[key];
-    }
-  };
-}
-const _globalThis = typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : typeof global !== "undefined" ? global : {};
-const globalKey$1 = "__unctx__";
-_globalThis[globalKey$1] || (_globalThis[globalKey$1] = createNamespace());
-const asyncHandlersKey = "__unctx_async_handlers__";
-const asyncHandlers = _globalThis[asyncHandlersKey] || (_globalThis[asyncHandlersKey] = /* @__PURE__ */ new Set());
 const manifest_45route_45rule = /* @__PURE__ */ defineNuxtRouteMiddleware(async (to) => {
   {
     return;
@@ -630,6 +389,7 @@ const globalMiddleware = [
   manifest_45route_45rule
 ];
 function getRouteFromPath(fullPath) {
+  const route = fullPath && typeof fullPath === "object" ? fullPath : {};
   if (typeof fullPath === "object") {
     fullPath = stringifyParsedURL({
       pathname: fullPath.path || "",
@@ -644,15 +404,15 @@ function getRouteFromPath(fullPath) {
     query: parseQuery(url.search),
     hash: url.hash,
     // stub properties for compat with vue-router
-    params: {},
+    params: route.params || {},
     name: void 0,
-    matched: [],
+    matched: route.matched || [],
     redirectedFrom: void 0,
-    meta: {},
+    meta: route.meta || {},
     href: fullPath
   };
 }
-const router_CaKIoANnI2 = /* @__PURE__ */ defineNuxtPlugin({
+const router_DclsWNDeVV7SyG4lslgLnjbQUK1ws8wgf2FHaAbo7Cw = /* @__PURE__ */ defineNuxtPlugin({
   name: "nuxt:router",
   enforce: "pre",
   setup(nuxtApp) {
@@ -745,9 +505,8 @@ const router_CaKIoANnI2 = /* @__PURE__ */ defineNuxtPlugin({
       setup: (props, { slots }) => {
         const navigate = () => handleNavigation(props.to, props.replace);
         return () => {
-          var _a;
           const route2 = router.resolve(props.to);
-          return props.custom ? (_a = slots.default) == null ? void 0 : _a.call(slots, { href: props.to, navigate, route: route2 }) : h("a", { href: props.to, onClick: (e) => {
+          return props.custom ? slots.default?.({ href: props.to, navigate, route: route2 }) : h("a", { href: props.to, onClick: (e) => {
             e.preventDefault();
             return navigate();
           } }, slots);
@@ -755,23 +514,22 @@ const router_CaKIoANnI2 = /* @__PURE__ */ defineNuxtPlugin({
       }
     }));
     nuxtApp._route = route;
-    nuxtApp._middleware = nuxtApp._middleware || {
+    nuxtApp._middleware ||= {
       global: [],
       named: {}
     };
     const initialLayout = nuxtApp.payload.state._layout;
     nuxtApp.hooks.hookOnce("app:created", async () => {
       router.beforeEach(async (to, from) => {
-        var _a;
         to.meta = reactive(to.meta || {});
         if (nuxtApp.isHydrating && initialLayout && !isReadonly(to.meta.layout)) {
           to.meta.layout = initialLayout;
         }
         nuxtApp._processingMiddleware = true;
-        if (!((_a = nuxtApp.ssrContext) == null ? void 0 : _a.islandContext)) {
+        if (!nuxtApp.ssrContext?.islandContext) {
           const middlewareEntries = /* @__PURE__ */ new Set([...globalMiddleware, ...nuxtApp._middleware.global]);
           {
-            const routeRules = await nuxtApp.runWithContext(() => getRouteRules(to.path));
+            const routeRules = await nuxtApp.runWithContext(() => getRouteRules({ path: to.path }));
             if (routeRules.appMiddleware) {
               for (const key in routeRules.appMiddleware) {
                 const guard = nuxtApp._middleware.named[key];
@@ -826,105 +584,49 @@ const router_CaKIoANnI2 = /* @__PURE__ */ defineNuxtPlugin({
     };
   }
 });
-function useRequestEvent(nuxtApp = useNuxtApp()) {
-  var _a;
-  return (_a = nuxtApp.ssrContext) == null ? void 0 : _a.event;
-}
-const useStateKeyPrefix = "$s";
-function useState(...args) {
-  const autoKey = typeof args[args.length - 1] === "string" ? args.pop() : void 0;
-  if (typeof args[0] !== "string") {
-    args.unshift(autoKey);
-  }
-  const [_key, init] = args;
-  if (!_key || typeof _key !== "string") {
-    throw new TypeError("[nuxt] [useState] key must be a string: " + _key);
-  }
-  if (init !== void 0 && typeof init !== "function") {
-    throw new Error("[nuxt] [useState] init must be a function: " + init);
-  }
-  const key = useStateKeyPrefix + _key;
-  const nuxtApp = useNuxtApp();
-  const state = toRef$1(nuxtApp.payload.state, key);
-  if (state.value === void 0 && init) {
-    const initialValue = init();
-    if (isRef(initialValue)) {
-      nuxtApp.payload.state[key] = initialValue;
-      return initialValue;
+function injectHead(nuxtApp) {
+  const nuxt = nuxtApp || tryUseNuxtApp();
+  return nuxt?.ssrContext?.head || nuxt?.runWithContext(() => {
+    if (hasInjectionContext()) {
+      return inject(headSymbol);
     }
-    state.value = initialValue;
+  });
+}
+function useHead(input, options = {}) {
+  const head = injectHead(options.nuxt);
+  if (head) {
+    return useHead$1(input, { head, ...options });
   }
-  return state;
+}
+function useSeoMeta(input, options = {}) {
+  const head = injectHead(options.nuxt);
+  if (head) {
+    return useSeoMeta$1(input, { head, ...options });
+  }
 }
 function definePayloadReducer(name, reduce) {
   {
     useNuxtApp().ssrContext._payloadReducers[name] = reduce;
   }
 }
-const clientOnlySymbol = Symbol.for("nuxt:client-only");
-const __nuxt_component_0 = defineComponent({
-  name: "ClientOnly",
-  inheritAttrs: false,
-  props: ["fallback", "placeholder", "placeholderTag", "fallbackTag"],
-  setup(_, { slots, attrs }) {
-    const mounted = ref(false);
-    provide(clientOnlySymbol, true);
-    return (props) => {
-      var _a;
-      if (mounted.value) {
-        return (_a = slots.default) == null ? void 0 : _a.call(slots);
-      }
-      const slot = slots.fallback || slots.placeholder;
-      if (slot) {
-        return slot();
-      }
-      const fallbackStr = props.fallback || props.placeholder || "";
-      const fallbackTag = props.fallbackTag || props.placeholderTag || "span";
-      return createElementBlock(fallbackTag, attrs, fallbackStr);
-    };
-  }
-});
-const _0_siteConfig_MwZUzHrRNP = /* @__PURE__ */ defineNuxtPlugin({
-  name: "nuxt-site-config:init",
-  enforce: "pre",
-  async setup(nuxtApp) {
-    var _a;
-    const state = useState("site-config");
-    {
-      const context = (_a = useRequestEvent()) == null ? void 0 : _a.context;
-      nuxtApp.hooks.hook("app:rendered", () => {
-        state.value = context == null ? void 0 : context.siteConfig.get({
-          debug: (/* @__PURE__ */ useRuntimeConfig())["nuxt-site-config"].debug,
-          resolveRefs: true
-        });
-      });
-    }
-    let stack = {};
-    return {
-      provide: {
-        nuxtSiteConfig: stack
-      }
-    };
-  }
-});
-const reducers = {
-  NuxtError: (data) => isNuxtError(data) && data.toJSON(),
-  EmptyShallowRef: (data) => isRef(data) && isShallow(data) && !data.value && (typeof data.value === "bigint" ? "0n" : JSON.stringify(data.value) || "_"),
-  EmptyRef: (data) => isRef(data) && !data.value && (typeof data.value === "bigint" ? "0n" : JSON.stringify(data.value) || "_"),
-  ShallowRef: (data) => isRef(data) && isShallow(data) && data.value,
-  ShallowReactive: (data) => isReactive(data) && isShallow(data) && toRaw(data),
-  Ref: (data) => isRef(data) && data.value,
-  Reactive: (data) => isReactive(data) && toRaw(data)
-};
-const revive_payload_server_eJ33V7gbc6 = /* @__PURE__ */ defineNuxtPlugin({
+const reducers = [
+  ["NuxtError", (data) => isNuxtError(data) && data.toJSON()],
+  ["EmptyShallowRef", (data) => isRef(data) && isShallow(data) && !data.value && (typeof data.value === "bigint" ? "0n" : JSON.stringify(data.value) || "_")],
+  ["EmptyRef", (data) => isRef(data) && !data.value && (typeof data.value === "bigint" ? "0n" : JSON.stringify(data.value) || "_")],
+  ["ShallowRef", (data) => isRef(data) && isShallow(data) && data.value],
+  ["ShallowReactive", (data) => isReactive(data) && isShallow(data) && toRaw(data)],
+  ["Ref", (data) => isRef(data) && data.value],
+  ["Reactive", (data) => isReactive(data) && toRaw(data)]
+];
+const revive_payload_server_MVtmlZaQpj6ApFmshWfUWl5PehCebzaBf2NuRMiIbms = /* @__PURE__ */ defineNuxtPlugin({
   name: "nuxt:revive-payload:server",
   setup() {
-    for (const reducer in reducers) {
-      definePayloadReducer(reducer, reducers[reducer]);
+    for (const [reducer, fn] of reducers) {
+      definePayloadReducer(reducer, fn);
     }
   }
 });
-const components_plugin_KR1HBZs4kY = /* @__PURE__ */ defineNuxtPlugin({
+const components_plugin_z4hgvsiddfKkfXTP6M8M4zG5Cb7sGnDhcryKVM45Di4 = /* @__PURE__ */ defineNuxtPlugin({
   name: "nuxt:global-components"
 });
 function tryOnScopeDispose(fn) {
@@ -1010,14 +712,16 @@ function watchPausable(source, cb, options = {}) {
 function tryOnMounted(fn, sync2 = true, target) {
   const instance = getLifeCycleTarget();
   if (instance)
-    ;
+    onMounted(fn, target);
   else if (sync2)
     fn();
   else
     nextTick(fn);
 }
 function tryOnUnmounted(fn, target) {
-  getLifeCycleTarget();
+  const instance = getLifeCycleTarget();
+  if (instance)
+    onUnmounted(fn, target);
 }
 function useToggle(initialValue = false, options = {}) {
   const {
@@ -1097,7 +801,12 @@ function useEventListener(...args) {
 }
 function useMounted() {
   const isMounted = ref(false);
-  getCurrentInstance();
+  const instance = getCurrentInstance();
+  if (instance) {
+    onMounted(() => {
+      isMounted.value = true;
+    }, instance);
+  }
   return isMounted;
 }
 function useSupported(callback) {
@@ -1494,78 +1203,6 @@ function useIntersectionObserver(target, callback, options = {}) {
     stop
   };
 }
-const UseMouseBuiltinExtractors = {
-  page: (event) => [event.pageX, event.pageY],
-  client: (event) => [event.clientX, event.clientY],
-  screen: (event) => [event.screenX, event.screenY],
-  movement: (event) => event instanceof Touch ? null : [event.movementX, event.movementY]
-};
-function useMouse(options = {}) {
-  const {
-    type = "page",
-    touch = true,
-    resetOnTouchEnds = false,
-    initialValue = { x: 0, y: 0 },
-    window: window2 = defaultWindow,
-    target = window2,
-    scroll = true,
-    eventFilter
-  } = options;
-  let _prevMouseEvent = null;
-  const x = ref(initialValue.x);
-  const y = ref(initialValue.y);
-  const sourceType = ref(null);
-  const extractor = typeof type === "function" ? type : UseMouseBuiltinExtractors[type];
-  const mouseHandler = (event) => {
-    const result = extractor(event);
-    _prevMouseEvent = event;
-    if (result) {
-      [x.value, y.value] = result;
-      sourceType.value = "mouse";
-    }
-  };
-  const touchHandler = (event) => {
-    if (event.touches.length > 0) {
-      const result = extractor(event.touches[0]);
-      if (result) {
-        [x.value, y.value] = result;
-        sourceType.value = "touch";
-      }
-    }
-  };
-  const scrollHandler = () => {
-    if (!_prevMouseEvent || !window2)
-      return;
-    const pos = extractor(_prevMouseEvent);
-    if (_prevMouseEvent instanceof MouseEvent && pos) {
-      x.value = pos[0] + window2.scrollX;
-      y.value = pos[1] + window2.scrollY;
-    }
-  };
-  const reset = () => {
-    x.value = initialValue.x;
-    y.value = initialValue.y;
-  };
-  const mouseHandlerWrapper = eventFilter ? (event) => eventFilter(() => mouseHandler(event), {}) : (event) => mouseHandler(event);
-  const touchHandlerWrapper = eventFilter ? (event) => eventFilter(() => touchHandler(event), {}) : (event) => touchHandler(event);
-  const scrollHandlerWrapper = eventFilter ? () => eventFilter(() => scrollHandler(), {}) : () => scrollHandler();
-  if (target) {
-    const listenerOptions = { passive: true };
-    useEventListener(target, ["mousemove", "dragover"], mouseHandlerWrapper, listenerOptions);
-    if (touch && type !== "movement") {
-      useEventListener(target, ["touchstart", "touchmove"], touchHandlerWrapper, listenerOptions);
-      if (resetOnTouchEnds)
-        useEventListener(target, "touchend", reset, listenerOptions);
-    }
-    if (scroll && type === "page")
-      useEventListener(window2, "scroll", scrollHandlerWrapper, { passive: true });
-  }
-  return {
-    x,
-    y,
-    sourceType
-  };
-}
 const motionState = {};
 var __defProp$1 = Object.defineProperty;
 var __defNormalProp$1 = (obj, key, value) => key in obj ? __defProp$1(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
@@ -1749,7 +1386,7 @@ function useMotionValues() {
     motionValues.value[key] = motionValue;
     return motionValue;
   };
-  tryOnUnmounted();
+  tryOnUnmounted(stop);
   return {
     motionValues,
     get,
@@ -2083,9 +1720,8 @@ function useMotionControls(motionProperties, variants = {}, { motionValues, push
       );
     }).filter(Boolean);
     async function waitForComplete() {
-      var _a, _b;
       await Promise.all(animations);
-      (_b = (_a = variant.transition) == null ? void 0 : _a.onComplete) == null ? void 0 : _b.call(_a);
+      variant.transition?.onComplete?.();
     }
     return Promise.all([waitForComplete()]);
   };
@@ -2584,9 +2220,9 @@ function directive(variants, isPreset = false) {
     created: register,
     mounted,
     getSSRProps(binding, node) {
-      let { initial: bindingInitial } = binding.value || node && (node == null ? void 0 : node.props) || {};
+      let { initial: bindingInitial } = binding.value || node && node?.props || {};
       bindingInitial = unref(bindingInitial);
-      const initial = defu({}, (variants == null ? void 0 : variants.initial) || {}, bindingInitial || {});
+      const initial = defu({}, variants?.initial || {}, bindingInitial || {});
       if (!initial || Object.keys(initial).length === 0)
         return;
       const style = variantToStyle(initial);
@@ -3146,9 +2782,8 @@ const MotionGroupComponent = defineComponent({
     const slots = useSlots();
     const { motionConfig, setNodeInstance } = setupMotionComponent(props);
     return () => {
-      var _a;
       const style = variantToStyle(motionConfig.value.initial || {});
-      const nodes = ((_a = slots.default) == null ? void 0 : _a.call(slots)) || [];
+      const nodes = slots.default?.() || [];
       for (let i = 0; i < nodes.length; i++) {
         const n = nodes[i];
         if (n.type === Fragment && Array.isArray(n.children)) {
@@ -3190,207 +2825,522 @@ const MotionPlugin = {
         app.directive(`motion-${key}`, directive(variants, true));
       }
     }
-    app.provide(CUSTOM_PRESETS, options == null ? void 0 : options.directives);
+    app.provide(CUSTOM_PRESETS, options?.directives);
     app.component("Motion", MotionComponent);
     app.component("MotionGroup", MotionGroupComponent);
   }
 };
-const motion_jmBwdqbgTJ = /* @__PURE__ */ defineNuxtPlugin(
+const motion_F8atB0kBNE8FIgT_ajBXU_q0VzJ7X_J9WFqahA8C37U = /* @__PURE__ */ defineNuxtPlugin(
   (nuxtApp) => {
     const config = /* @__PURE__ */ useRuntimeConfig();
     nuxtApp.vueApp.use(MotionPlugin, config.public.motion);
   }
 );
 const plugins = [
-  unhead_KgADcZ0jPj,
-  router_CaKIoANnI2,
-  _0_siteConfig_MwZUzHrRNP,
-  revive_payload_server_eJ33V7gbc6,
-  components_plugin_KR1HBZs4kY,
-  motion_jmBwdqbgTJ
+  unhead_k2P3m_ZDyjlr2mMYnoDPwavjsDN8hBlk9cFai0bbopU,
+  router_DclsWNDeVV7SyG4lslgLnjbQUK1ws8wgf2FHaAbo7Cw,
+  revive_payload_server_MVtmlZaQpj6ApFmshWfUWl5PehCebzaBf2NuRMiIbms,
+  components_plugin_z4hgvsiddfKkfXTP6M8M4zG5Cb7sGnDhcryKVM45Di4,
+  motion_F8atB0kBNE8FIgT_ajBXU_q0VzJ7X_J9WFqahA8C37U
 ];
-const _sfc_main$8 = {
-  __name: "CustomCursor",
-  __ssrInlineRender: true,
-  setup(__props) {
-    const { x, y } = useMouse();
-    const isHovering = ref(false);
-    return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${ssrRenderAttrs(mergeProps({ class: "pointer-events-none fixed inset-0 z-[9999] mix-blend-difference hidden md:block" }, _attrs))}><div class="absolute h-4 w-4 rounded-full bg-white transition-transform duration-100 ease-out" style="${ssrRenderStyle({
-        transform: `translate(${unref(x) - 8}px, ${unref(y) - 8}px) scale(${isHovering.value ? 2.5 : 1})`
-      })}"></div><div class="absolute h-8 w-8 rounded-full border border-white transition-transform duration-300 ease-out opacity-50" style="${ssrRenderStyle({
-        transform: `translate(${unref(x) - 16}px, ${unref(y) - 16}px) scale(${isHovering.value ? 1.5 : 1})`
-      })}"></div></div>`);
+defineComponent({
+  name: "ServerPlaceholder",
+  render() {
+    return createElementBlock("div");
+  }
+});
+const clientOnlySymbol = Symbol.for("nuxt:client-only");
+const __nuxt_component_0$1 = defineComponent({
+  name: "ClientOnly",
+  inheritAttrs: false,
+  props: ["fallback", "placeholder", "placeholderTag", "fallbackTag"],
+  ...false,
+  setup(props, { slots, attrs }) {
+    const mounted = shallowRef(false);
+    const vm = getCurrentInstance();
+    if (vm) {
+      vm._nuxtClientOnly = true;
+    }
+    provide(clientOnlySymbol, true);
+    return () => {
+      if (mounted.value) {
+        const vnodes = slots.default?.();
+        if (vnodes && vnodes.length === 1) {
+          return [cloneVNode(vnodes[0], attrs)];
+        }
+        return vnodes;
+      }
+      const slot = slots.fallback || slots.placeholder;
+      if (slot) {
+        return h(slot);
+      }
+      const fallbackStr = props.fallback || props.placeholder || "";
+      const fallbackTag = props.fallbackTag || props.placeholderTag || "span";
+      return createElementBlock(fallbackTag, attrs, fallbackStr);
     };
   }
-};
-const _sfc_setup$8 = _sfc_main$8.setup;
-_sfc_main$8.setup = (props, ctx) => {
-  const ssrContext = useSSRContext();
-  (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("components/CustomCursor.vue");
-  return _sfc_setup$8 ? _sfc_setup$8(props, ctx) : void 0;
+});
+const useStateKeyPrefix = "$s";
+function useState(...args) {
+  const autoKey = typeof args[args.length - 1] === "string" ? args.pop() : void 0;
+  if (typeof args[0] !== "string") {
+    args.unshift(autoKey);
+  }
+  const [_key, init] = args;
+  if (!_key || typeof _key !== "string") {
+    throw new TypeError("[nuxt] [useState] key must be a string: " + _key);
+  }
+  if (init !== void 0 && typeof init !== "function") {
+    throw new Error("[nuxt] [useState] init must be a function: " + init);
+  }
+  const key = useStateKeyPrefix + _key;
+  const nuxtApp = useNuxtApp();
+  const state = toRef$1(nuxtApp.payload.state, key);
+  if (state.value === void 0 && init) {
+    const initialValue = init();
+    if (isRef(initialValue)) {
+      nuxtApp.payload.state[key] = initialValue;
+      return initialValue;
+    }
+    state.value = initialValue;
+  }
+  return state;
+}
+const firstNonUndefined = (...args) => args.find((arg) => arg !== void 0);
+// @__NO_SIDE_EFFECTS__
+function defineNuxtLink(options) {
+  const componentName = options.componentName || "NuxtLink";
+  function isHashLinkWithoutHashMode(link) {
+    return typeof link === "string" && link.startsWith("#");
+  }
+  function resolveTrailingSlashBehavior(to, resolve, trailingSlash) {
+    const effectiveTrailingSlash = trailingSlash ?? options.trailingSlash;
+    if (!to || effectiveTrailingSlash !== "append" && effectiveTrailingSlash !== "remove") {
+      return to;
+    }
+    if (typeof to === "string") {
+      return applyTrailingSlashBehavior(to, effectiveTrailingSlash);
+    }
+    const path = "path" in to && to.path !== void 0 ? to.path : resolve(to).path;
+    const resolvedPath = {
+      ...to,
+      name: void 0,
+      // named routes would otherwise always override trailing slash behavior
+      path: applyTrailingSlashBehavior(path, effectiveTrailingSlash)
+    };
+    return resolvedPath;
+  }
+  function useNuxtLink(props) {
+    const router = useRouter();
+    const config = /* @__PURE__ */ useRuntimeConfig();
+    const hasTarget = computed(() => !!props.target && props.target !== "_self");
+    const isAbsoluteUrl = computed(() => {
+      const path = props.to || props.href || "";
+      return typeof path === "string" && hasProtocol(path, { acceptRelative: true });
+    });
+    const builtinRouterLink = resolveComponent("RouterLink");
+    const useBuiltinLink = builtinRouterLink && typeof builtinRouterLink !== "string" ? builtinRouterLink.useLink : void 0;
+    const isExternal = computed(() => {
+      if (props.external) {
+        return true;
+      }
+      const path = props.to || props.href || "";
+      if (typeof path === "object") {
+        return false;
+      }
+      return path === "" || isAbsoluteUrl.value;
+    });
+    const to = computed(() => {
+      const path = props.to || props.href || "";
+      if (isExternal.value) {
+        return path;
+      }
+      return resolveTrailingSlashBehavior(path, router.resolve, props.trailingSlash);
+    });
+    const link = isExternal.value ? void 0 : useBuiltinLink?.({ ...props, to });
+    const href = computed(() => {
+      const effectiveTrailingSlash = props.trailingSlash ?? options.trailingSlash;
+      if (!to.value || isAbsoluteUrl.value || isHashLinkWithoutHashMode(to.value)) {
+        return to.value;
+      }
+      if (isExternal.value) {
+        const path = typeof to.value === "object" && "path" in to.value ? resolveRouteObject(to.value) : to.value;
+        const href2 = typeof path === "object" ? router.resolve(path).href : path;
+        return applyTrailingSlashBehavior(href2, effectiveTrailingSlash);
+      }
+      if (typeof to.value === "object") {
+        return router.resolve(to.value)?.href ?? null;
+      }
+      return applyTrailingSlashBehavior(joinURL(config.app.baseURL, to.value), effectiveTrailingSlash);
+    });
+    return {
+      to,
+      hasTarget,
+      isAbsoluteUrl,
+      isExternal,
+      //
+      href,
+      isActive: link?.isActive ?? computed(() => to.value === router.currentRoute.value.path),
+      isExactActive: link?.isExactActive ?? computed(() => to.value === router.currentRoute.value.path),
+      route: link?.route ?? computed(() => router.resolve(to.value)),
+      async navigate(_e) {
+        await navigateTo(href.value, { replace: props.replace, external: isExternal.value || hasTarget.value });
+      }
+    };
+  }
+  return defineComponent({
+    name: componentName,
+    props: {
+      // Routing
+      to: {
+        type: [String, Object],
+        default: void 0,
+        required: false
+      },
+      href: {
+        type: [String, Object],
+        default: void 0,
+        required: false
+      },
+      // Attributes
+      target: {
+        type: String,
+        default: void 0,
+        required: false
+      },
+      rel: {
+        type: String,
+        default: void 0,
+        required: false
+      },
+      noRel: {
+        type: Boolean,
+        default: void 0,
+        required: false
+      },
+      // Prefetching
+      prefetch: {
+        type: Boolean,
+        default: void 0,
+        required: false
+      },
+      prefetchOn: {
+        type: [String, Object],
+        default: void 0,
+        required: false
+      },
+      noPrefetch: {
+        type: Boolean,
+        default: void 0,
+        required: false
+      },
+      // Styling
+      activeClass: {
+        type: String,
+        default: void 0,
+        required: false
+      },
+      exactActiveClass: {
+        type: String,
+        default: void 0,
+        required: false
+      },
+      prefetchedClass: {
+        type: String,
+        default: void 0,
+        required: false
+      },
+      // Vue Router's `<RouterLink>` additional props
+      replace: {
+        type: Boolean,
+        default: void 0,
+        required: false
+      },
+      ariaCurrentValue: {
+        type: String,
+        default: void 0,
+        required: false
+      },
+      // Edge cases handling
+      external: {
+        type: Boolean,
+        default: void 0,
+        required: false
+      },
+      // Slot API
+      custom: {
+        type: Boolean,
+        default: void 0,
+        required: false
+      },
+      // Behavior
+      trailingSlash: {
+        type: String,
+        default: void 0,
+        required: false
+      }
+    },
+    useLink: useNuxtLink,
+    setup(props, { slots }) {
+      const router = useRouter();
+      const { to, href, navigate, isExternal, hasTarget, isAbsoluteUrl } = useNuxtLink(props);
+      shallowRef(false);
+      const el = void 0;
+      const elRef = void 0;
+      async function prefetch(nuxtApp = useNuxtApp()) {
+        {
+          return;
+        }
+      }
+      return () => {
+        if (!isExternal.value && !hasTarget.value && !isHashLinkWithoutHashMode(to.value)) {
+          const routerLinkProps = {
+            ref: elRef,
+            to: to.value,
+            activeClass: props.activeClass || options.activeClass,
+            exactActiveClass: props.exactActiveClass || options.exactActiveClass,
+            replace: props.replace,
+            ariaCurrentValue: props.ariaCurrentValue,
+            custom: props.custom
+          };
+          if (!props.custom) {
+            routerLinkProps.rel = props.rel || void 0;
+          }
+          return h(
+            resolveComponent("RouterLink"),
+            routerLinkProps,
+            slots.default
+          );
+        }
+        const target = props.target || null;
+        const rel = firstNonUndefined(
+          // converts `""` to `null` to prevent the attribute from being added as empty (`rel=""`)
+          props.noRel ? "" : props.rel,
+          options.externalRelAttribute,
+          /*
+          * A fallback rel of `noopener noreferrer` is applied for external links or links that open in a new tab.
+          * This solves a reverse tabnapping security flaw in browsers pre-2021 as well as improving privacy.
+          */
+          isAbsoluteUrl.value || hasTarget.value ? "noopener noreferrer" : ""
+        ) || null;
+        if (props.custom) {
+          if (!slots.default) {
+            return null;
+          }
+          return slots.default({
+            href: href.value,
+            navigate,
+            prefetch,
+            get route() {
+              if (!href.value) {
+                return void 0;
+              }
+              const url = new URL(href.value, "http://localhost");
+              return {
+                path: url.pathname,
+                fullPath: url.pathname,
+                get query() {
+                  return parseQuery(url.search);
+                },
+                hash: url.hash,
+                params: {},
+                name: void 0,
+                matched: [],
+                redirectedFrom: void 0,
+                meta: {},
+                href: href.value
+              };
+            },
+            rel,
+            target,
+            isExternal: isExternal.value || hasTarget.value,
+            isActive: false,
+            isExactActive: false
+          });
+        }
+        return h("a", {
+          ref: el,
+          href: href.value || null,
+          // converts `""` to `null` to prevent the attribute from being added as empty (`href=""`)
+          rel,
+          target,
+          onClick: (event) => {
+            if (isExternal.value || hasTarget.value) {
+              return;
+            }
+            event.preventDefault();
+            return props.replace ? router.replace(href.value) : router.push(href.value);
+          }
+        }, slots.default?.());
+      };
+    }
+  });
+}
+const __nuxt_component_0 = /* @__PURE__ */ defineNuxtLink(nuxtLinkDefaults);
+function applyTrailingSlashBehavior(to, trailingSlash) {
+  const normalizeFn = trailingSlash === "append" ? withTrailingSlash : withoutTrailingSlash;
+  const hasProtocolDifferentFromHttp = hasProtocol(to) && !to.startsWith("http");
+  if (hasProtocolDifferentFromHttp) {
+    return to;
+  }
+  return normalizeFn(to, true);
+}
+const DICTIONARY = {
+  en: {
+    nav: {
+      home: "Home",
+      dna: "DNA",
+      works: "Works",
+      contact: "Contact"
+    },
+    hero: {
+      title: "CRAFTING\nTHE FUTURE.",
+      subtitle: "Matthieu Frain. Transforming complex problems into fluid interfaces.",
+      cta: "See my work"
+    },
+    about: {
+      title: "The DNA",
+      hacker: {
+        title: "The Hacker",
+        desc: "Reverse engineering school APIs to build better tools. Solving problems by digging deep."
+      },
+      builder: {
+        title: "The Builder",
+        desc: "Full-stack experience with GDSI. Building robust enterprise solutions that handle complex data and real-time operations."
+      },
+      resilient: {
+        title: "The Resilient",
+        desc: "Overcoming health challenges has sharpened my focus and determination. I don't just write code; I persevere until the solution is elegant."
+      },
+      pilot: {
+        title: "The AI Pilot",
+        desc: "Leveraging Google IDX & Gemini to amplify productivity and explore new frontiers."
+      }
+    },
+    works: {
+      title: "Selected Works",
+      subtitle: "A collection of projects where design meets engineering.",
+      gdsi: {
+        title: "GDSI Stock Manager",
+        desc: "A comprehensive enterprise stock management solution built with PHP and SQL. Handles complex inventory tracking, reporting, and real-time analytics for large-scale operations.",
+        tag: "Full Stack"
+      },
+      school: {
+        title: "School Hacker App",
+        desc: "Mobile application developed by reverse engineering school APIs to provide a better user experience.",
+        tag: "Mobile App"
+      },
+      tv: {
+        title: "AI TV Zap",
+        desc: "Smart TV recommendation system using React and advanced algorithms to personalize content viewing.",
+        tag: "AI & React"
+      }
+    },
+    footer: {
+      title: "LET'S TALK",
+      cta: "Get in touch",
+      copyright: "Matthieu Frain. Architect & Hacker."
+    }
+  },
+  fr: {
+    nav: {
+      home: "Accueil",
+      dna: "ADN",
+      works: "Projets",
+      contact: "Contact"
+    },
+    hero: {
+      title: "FAÇONNER\nLE FUTUR.",
+      subtitle: "Matthieu Frain. Transformer des problèmes complexes en interfaces fluides.",
+      cta: "Voir mes projets"
+    },
+    about: {
+      title: "L'ADN",
+      hacker: {
+        title: "Le Hacker",
+        desc: "Rétro-ingénierie d'API scolaires pour créer de meilleurs outils. Résoudre les problèmes en creusant profond."
+      },
+      builder: {
+        title: "Le Bâtisseur",
+        desc: "Expérience Full-stack avec GDSI. Création de solutions d'entreprise robustes gérant des données complexes et des opérations en temps réel."
+      },
+      resilient: {
+        title: "Le Résilient",
+        desc: "Surmonter des défis de santé a aiguisé ma concentration et ma détermination. Je ne fais pas que coder ; je persévère jusqu'à l'élégance."
+      },
+      pilot: {
+        title: "Le Pilote IA",
+        desc: "Exploiter Google IDX & Gemini pour amplifier la productivité et explorer de nouvelles frontières."
+      }
+    },
+    works: {
+      title: "Projets Sélectionnés",
+      subtitle: "Une collection de projets où le design rencontre l'ingénierie.",
+      gdsi: {
+        title: "Gestionnaire de Stock GDSI",
+        desc: "Solution complète de gestion de stock d'entreprise construite avec PHP et SQL. Gère le suivi d'inventaire complexe, le reporting et l'analyse en temps réel pour les opérations à grande échelle.",
+        tag: "Full Stack"
+      },
+      school: {
+        title: "App School Hacker",
+        desc: "Application mobile développée par rétro-ingénierie d'API scolaires pour offrir une meilleure expérience utilisateur.",
+        tag: "App Mobile"
+      },
+      tv: {
+        title: "AI TV Zap",
+        desc: "Système de recommandation Smart TV utilisant React et des algorithmes avancés pour personnaliser le visionnage.",
+        tag: "IA & React"
+      }
+    },
+    footer: {
+      title: "DISCUTONS",
+      cta: "Me contacter",
+      copyright: "Matthieu Frain. Architecte & Hacker."
+    }
+  }
 };
 const useTranslation = () => {
   const locale = useState("locale", () => "en");
   const toggleLocale = () => {
     locale.value = locale.value === "en" ? "fr" : "en";
   };
-  const dict = {
-    en: {
-      nav: {
-        home: "Home",
-        dna: "DNA",
-        works: "Works",
-        contact: "Contact"
-      },
-      hero: {
-        title: "CRAFTING\nTHE FUTURE.",
-        subtitle: "Matthieu Frain. Transforming complex problems into fluid interfaces.",
-        cta: "See my work"
-      },
-      about: {
-        title: "The DNA",
-        hacker: {
-          title: "The Hacker",
-          desc: "Reverse engineering school APIs to build better tools. Solving problems by digging deep."
-        },
-        builder: {
-          title: "The Builder",
-          desc: "Full-stack experience with GDSI. Building robust enterprise solutions that handle complex data and real-time operations."
-        },
-        resilient: {
-          title: "The Resilient",
-          desc: "Overcoming health challenges has sharpened my focus and determination. I don't just write code; I persevere until the solution is elegant."
-        },
-        pilot: {
-          title: "The AI Pilot",
-          desc: "Leveraging Google IDX & Gemini to amplify productivity and explore new frontiers."
-        }
-      },
-      works: {
-        title: "Selected Works",
-        subtitle: "A collection of projects where design meets engineering.",
-        gdsi: {
-          title: "GDSI Stock Manager",
-          desc: "A comprehensive enterprise stock management solution built with PHP and SQL. Handles complex inventory tracking, reporting, and real-time analytics for large-scale operations.",
-          tag: "Full Stack"
-        },
-        school: {
-          title: "School Hacker App",
-          desc: "Mobile application developed by reverse engineering school APIs to provide a better user experience.",
-          tag: "Mobile App"
-        },
-        tv: {
-          title: "AI TV Zap",
-          desc: "Smart TV recommendation system using React and advanced algorithms to personalize content viewing.",
-          tag: "AI & React"
-        }
-      },
-      footer: {
-        title: "LET'S TALK",
-        cta: "Get in touch",
-        copyright: "Matthieu Frain. Architect & Hacker."
-      }
-    },
-    fr: {
-      nav: {
-        home: "Accueil",
-        dna: "ADN",
-        works: "Projets",
-        contact: "Contact"
-      },
-      hero: {
-        title: "FAÇONNER\nLE FUTUR.",
-        subtitle: "Matthieu Frain. Transformer des problèmes complexes en interfaces fluides.",
-        cta: "Voir mes projets"
-      },
-      about: {
-        title: "L'ADN",
-        hacker: {
-          title: "Le Hacker",
-          desc: "Rétro-ingénierie d'API scolaires pour créer de meilleurs outils. Résoudre les problèmes en creusant profond."
-        },
-        builder: {
-          title: "Le Bâtisseur",
-          desc: "Expérience Full-stack avec GDSI. Création de solutions d'entreprise robustes gérant des données complexes et des opérations en temps réel."
-        },
-        resilient: {
-          title: "Le Résilient",
-          desc: "Surmonter des défis de santé a aiguisé ma concentration et ma détermination. Je ne fais pas que coder ; je persévère jusqu'à l'élégance."
-        },
-        pilot: {
-          title: "Le Pilote IA",
-          desc: "Exploiter Google IDX & Gemini pour amplifier la productivité et explorer de nouvelles frontières."
-        }
-      },
-      works: {
-        title: "Projets Sélectionnés",
-        subtitle: "Une collection de projets où le design rencontre l'ingénierie.",
-        gdsi: {
-          title: "Gestionnaire de Stock GDSI",
-          desc: "Solution complète de gestion de stock d'entreprise construite avec PHP et SQL. Gère le suivi d'inventaire complexe, le reporting et l'analyse en temps réel pour les opérations à grande échelle.",
-          tag: "Full Stack"
-        },
-        school: {
-          title: "App School Hacker",
-          desc: "Application mobile développée par rétro-ingénierie d'API scolaires pour offrir une meilleure expérience utilisateur.",
-          tag: "App Mobile"
-        },
-        tv: {
-          title: "AI TV Zap",
-          desc: "Système de recommandation Smart TV utilisant React et des algorithmes avancés pour personnaliser le visionnage.",
-          tag: "IA & React"
-        }
-      },
-      footer: {
-        title: "DISCUTONS",
-        cta: "Me contacter",
-        copyright: "Matthieu Frain. Architecte & Hacker."
-      }
+  const setLocale = (newLocale) => {
+    if (newLocale === "en" || newLocale === "fr") {
+      locale.value = newLocale;
     }
   };
-  const t = computed(() => dict[locale.value]);
+  const t = computed(() => {
+    const currentDict = DICTIONARY[locale.value] || DICTIONARY["en"];
+    return currentDict;
+  });
   return {
     locale,
     toggleLocale,
+    setLocale,
     t
   };
 };
-const _sfc_main$7 = {
+const _sfc_main$7 = /* @__PURE__ */ defineComponent({
   __name: "TheNavbar",
   __ssrInlineRender: true,
   setup(__props) {
-    const { t, locale } = useTranslation();
-    const isDark = useDark({
-      selector: "html",
-      attribute: "class",
-      valueDark: "dark",
-      valueLight: ""
-    });
+    const { t } = useTranslation();
+    const isDark = useDark();
     useToggle(isDark);
-    const links = [
-      { key: "home", label: "Home", href: "#", icon: Home },
-      { key: "dna", label: "DNA", href: "#dna", icon: Dna },
-      { key: "works", label: "Works", href: "#works", icon: Briefcase },
-      { key: "contact", label: "Contact", href: "#contact", icon: Mail }
-    ];
     return (_ctx, _push, _parent, _attrs) => {
-      const _component_ClientOnly = __nuxt_component_0;
-      _push(`<nav${ssrRenderAttrs(mergeProps({ class: "fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-full px-6 md:w-auto md:px-0" }, _attrs))}><div class="flex items-center justify-between md:justify-center gap-2 p-2 rounded-2xl md:rounded-full bg-zinc-950/80 backdrop-blur-xl border border-white/10 shadow-2xl shadow-black/50 ring-1 ring-white/5"><div class="flex md:hidden w-full justify-around"><!--[-->`);
-      ssrRenderList(links, (link) => {
-        _push(`<a${ssrRenderAttr("href", link.href)} class="p-3 text-zinc-400 hover:text-white transition-all active:scale-95">`);
-        ssrRenderVNode(_push, createVNode(resolveDynamicComponent(link.icon), { class: "w-5 h-5" }, null), _parent);
-        _push(`</a>`);
-      });
-      _push(`<!--]--></div><div class="hidden md:flex items-center gap-1"><!--[-->`);
-      ssrRenderList(links, (link) => {
-        _push(`<a${ssrRenderAttr("href", link.href)} class="px-5 py-2.5 text-sm font-medium text-zinc-400 hover:text-white transition-all duration-300 rounded-full hover:bg-white/5 active:scale-95">${ssrInterpolate(unref(t).nav[link.key])}</a>`);
-      });
-      _push(`<!--]--></div><div class="hidden md:block w-px h-4 bg-white/10 mx-2"></div><div class="flex items-center gap-1"><button class="px-3 py-1.5 text-xs font-bold text-zinc-400 hover:text-white transition-all duration-300 rounded-full hover:bg-white/5 active:scale-95 uppercase">${ssrInterpolate(unref(locale))}</button>`);
+      const _component_ClientOnly = __nuxt_component_0$1;
+      _push(`<nav${ssrRenderAttrs(mergeProps({ class: "fixed top-0 left-0 right-0 z-50 flex justify-center pt-6 px-4 pointer-events-none" }, _attrs))} data-v-e5f487cd><div class="glass-panel px-6 py-3 rounded-full flex items-center gap-8 pointer-events-auto max-w-[90vw] overflow-x-auto no-scrollbar" data-v-e5f487cd><button class="text-sm font-medium hover:text-indigo-400 transition-colors whitespace-nowrap" data-v-e5f487cd>${ssrInterpolate(unref(t).nav.home)}</button><div class="flex items-center gap-6" data-v-e5f487cd><button class="text-sm text-zinc-400 hover:text-white transition-colors whitespace-nowrap" data-v-e5f487cd>${ssrInterpolate(unref(t).nav.dna)}</button><button class="text-sm text-zinc-400 hover:text-white transition-colors whitespace-nowrap" data-v-e5f487cd>${ssrInterpolate(unref(t).nav.works)}</button><button class="text-sm text-zinc-400 hover:text-white transition-colors whitespace-nowrap" data-v-e5f487cd>${ssrInterpolate(unref(t).nav.contact)}</button></div><div class="w-px h-4 bg-zinc-800" data-v-e5f487cd></div>`);
       _push(ssrRenderComponent(_component_ClientOnly, null, {}, _parent));
-      _push(`</div></div></nav>`);
+      _push(`</div></nav>`);
     };
   }
+});
+const _export_sfc = (sfc, props) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props) {
+    target[key] = val;
+  }
+  return target;
 };
 const _sfc_setup$7 = _sfc_main$7.setup;
 _sfc_main$7.setup = (props, ctx) => {
@@ -3398,6 +3348,7 @@ _sfc_main$7.setup = (props, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("components/TheNavbar.vue");
   return _sfc_setup$7 ? _sfc_setup$7(props, ctx) : void 0;
 };
+const __nuxt_component_1 = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["__scopeId", "data-v-e5f487cd"]]);
 const _sfc_main$6 = {
   __name: "HeroSection",
   __ssrInlineRender: true,
@@ -3441,88 +3392,148 @@ _sfc_main$5.setup = (props, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("components/BentoGrid.vue");
   return _sfc_setup$5 ? _sfc_setup$5(props, ctx) : void 0;
 };
-const _sfc_main$4 = {
+const _sfc_main$4 = /* @__PURE__ */ defineComponent({
   __name: "SelectedWorks",
   __ssrInlineRender: true,
   setup(__props) {
     const { t } = useTranslation();
+    const projects = [
+      {
+        id: "gdsi",
+        image: "/images/project-gdsi.jpg",
+        key: "gdsi",
+        // Key to lookup in translation
+        link: "#"
+      },
+      {
+        id: "school",
+        image: "/images/project-pronote.jpg",
+        key: "school",
+        link: "#"
+      },
+      {
+        id: "tv",
+        image: "/images/project-tv.jpg",
+        key: "tv",
+        link: "#"
+      }
+    ];
     return (_ctx, _push, _parent, _attrs) => {
       const _directive_motion_slide_visible_bottom = resolveDirective("motion-slide-visible-bottom");
       _push(`<section${ssrRenderAttrs(mergeProps({
         id: "works",
-        class: "py-32 px-6 md:px-20 max-w-7xl mx-auto"
-      }, _attrs))}><div${ssrRenderAttrs(mergeProps({ class: "mb-20" }, ssrGetDirectiveProps(_ctx, _directive_motion_slide_visible_bottom)))}><h2 class="font-display text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight">${ssrInterpolate(unref(t).works.title)}</h2><p class="text-xl text-zinc-400 max-w-2xl font-light">${ssrInterpolate(unref(t).works.subtitle)}</p></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 auto-rows-[500px]"><div${ssrRenderAttrs(mergeProps({
-        class: "group relative md:col-span-2 overflow-hidden rounded-3xl bg-zinc-900 border border-white/5 cursor-pointer flex flex-col md:block",
-        delay: 100
-      }, ssrGetDirectiveProps(_ctx, _directive_motion_slide_visible_bottom)))}><div class="h-64 md:absolute md:inset-0 bg-[url(&#39;/images/project-gdsi.jpg&#39;)] bg-cover bg-center transition-transform duration-700 group-hover:scale-110"></div><div class="hidden md:block absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/50 to-transparent opacity-90 transition-opacity duration-500 group-hover:opacity-80"></div><div class="relative h-full flex flex-col justify-end p-6 md:p-10 z-10 bg-zinc-900 md:bg-transparent flex-1"><div class="transform md:translate-y-4 transition-transform duration-500 group-hover:translate-y-0"><span class="inline-block px-3 py-1 mb-4 text-xs font-bold tracking-widest text-indigo-400 uppercase bg-indigo-500/10 rounded-full border border-indigo-500/20">${ssrInterpolate(unref(t).works.gdsi.tag)}</span><h3 class="font-display text-3xl md:text-5xl font-bold text-white mb-4">${ssrInterpolate(unref(t).works.gdsi.title)}</h3><p class="text-zinc-400 md:text-zinc-300 max-w-xl md:opacity-0 transform md:translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0 delay-100">${ssrInterpolate(unref(t).works.gdsi.desc)}</p></div></div></div><div${ssrRenderAttrs(mergeProps({
-        class: "group relative overflow-hidden rounded-3xl bg-zinc-900 border border-white/5 cursor-pointer flex flex-col md:block",
-        delay: 200
-      }, ssrGetDirectiveProps(_ctx, _directive_motion_slide_visible_bottom)))}><div class="h-64 md:absolute md:inset-0 bg-[url(&#39;/images/project-pronote.jpg&#39;)] bg-cover bg-center transition-transform duration-700 group-hover:scale-110"></div><div class="hidden md:block absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/50 to-transparent opacity-90 transition-opacity duration-500 group-hover:opacity-80"></div><div class="relative h-full flex flex-col justify-end p-6 md:p-8 z-10 bg-zinc-900 md:bg-transparent flex-1"><div class="transform md:translate-y-4 transition-transform duration-500 group-hover:translate-y-0"><span class="inline-block px-3 py-1 mb-4 text-xs font-bold tracking-widest text-violet-400 uppercase bg-violet-500/10 rounded-full border border-violet-500/20">${ssrInterpolate(unref(t).works.school.tag)}</span><h3 class="font-display text-2xl md:text-3xl font-bold text-white mb-3">${ssrInterpolate(unref(t).works.school.title)}</h3><p class="text-zinc-400 md:text-zinc-300 md:opacity-0 transform md:translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0 delay-100">${ssrInterpolate(unref(t).works.school.desc)}</p></div></div></div><div${ssrRenderAttrs(mergeProps({
-        class: "group relative overflow-hidden rounded-3xl bg-zinc-900 border border-white/5 cursor-pointer flex flex-col md:block",
-        delay: 300
-      }, ssrGetDirectiveProps(_ctx, _directive_motion_slide_visible_bottom)))}><div class="h-64 md:absolute md:inset-0 bg-[url(&#39;/images/project-tv.jpg&#39;)] bg-cover bg-center transition-transform duration-700 group-hover:scale-110"></div><div class="hidden md:block absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/50 to-transparent opacity-90 transition-opacity duration-500 group-hover:opacity-80"></div><div class="relative h-full flex flex-col justify-end p-6 md:p-8 z-10 bg-zinc-900 md:bg-transparent flex-1"><div class="transform md:translate-y-4 transition-transform duration-500 group-hover:translate-y-0"><span class="inline-block px-3 py-1 mb-4 text-xs font-bold tracking-widest text-cyan-400 uppercase bg-cyan-500/10 rounded-full border border-cyan-500/20">${ssrInterpolate(unref(t).works.tv.tag)}</span><h3 class="font-display text-2xl md:text-3xl font-bold text-white mb-3">${ssrInterpolate(unref(t).works.tv.title)}</h3><p class="text-zinc-400 md:text-zinc-300 md:opacity-0 transform md:translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0 delay-100">${ssrInterpolate(unref(t).works.tv.desc)}</p></div></div></div></div></section>`);
+        class: "py-32 relative z-10"
+      }, _attrs))}><div class="container mx-auto px-4"><div class="mb-16"><h2 class="text-4xl md:text-6xl font-display font-bold mb-6">${ssrInterpolate(unref(t).works.title)}</h2><p class="text-xl text-zinc-400 max-w-2xl">${ssrInterpolate(unref(t).works.subtitle)}</p></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"><!--[-->`);
+      ssrRenderList(projects, (project) => {
+        _push(`<div${ssrRenderAttrs(mergeProps({
+          key: project.id,
+          class: "group relative"
+        }, ssrGetDirectiveProps(_ctx, _directive_motion_slide_visible_bottom)))}><div class="relative overflow-hidden rounded-2xl bg-zinc-900 border border-white/5"><div class="aspect-video w-full overflow-hidden"><img${ssrRenderAttr("src", project.image)}${ssrRenderAttr("alt", unref(t).works[project.key].title)} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"></div><div class="hidden md:flex absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex-col justify-end p-6"><span class="text-indigo-400 text-sm font-medium mb-2">${ssrInterpolate(unref(t).works[project.key].tag)}</span><h3 class="text-2xl font-bold mb-2">${ssrInterpolate(unref(t).works[project.key].title)}</h3><p class="text-zinc-300 text-sm">${ssrInterpolate(unref(t).works[project.key].desc)}</p></div></div><div class="block md:hidden mt-4"><span class="text-indigo-400 text-xs font-medium block mb-1">${ssrInterpolate(unref(t).works[project.key].tag)}</span><h3 class="text-xl font-bold mb-2">${ssrInterpolate(unref(t).works[project.key].title)}</h3><p class="text-zinc-400 text-sm leading-relaxed">${ssrInterpolate(unref(t).works[project.key].desc)}</p></div></div>`);
+      });
+      _push(`<!--]--></div></div></section>`);
     };
   }
-};
+});
 const _sfc_setup$4 = _sfc_main$4.setup;
 _sfc_main$4.setup = (props, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("components/SelectedWorks.vue");
   return _sfc_setup$4 ? _sfc_setup$4(props, ctx) : void 0;
 };
-const _sfc_main$3 = {
+const _sfc_main$3 = /* @__PURE__ */ defineComponent({
   __name: "TheFooter",
   __ssrInlineRender: true,
   setup(__props) {
     const { t } = useTranslation();
+    const socialLinks = [
+      {
+        name: "Email",
+        icon: Mail,
+        href: "mailto:matthieufrain.pro@gmail.com",
+        label: "matthieufrain.pro@gmail.com"
+      },
+      {
+        name: "GitHub",
+        icon: Github,
+        href: "https://www.github.com/MatthieuFrain",
+        label: "MatthieuFrain"
+      },
+      {
+        name: "LinkedIn",
+        icon: Linkedin,
+        href: "https://www.linkedin.com/in/matthieu-frain-0628511a6/",
+        label: "Matthieu Frain"
+      }
+    ];
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<footer${ssrRenderAttrs(mergeProps({ class: "py-12 px-6 md:px-20 border-t border-zinc-900 bg-zinc-950/50 backdrop-blur-sm" }, _attrs))}><div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6"><div class="text-center md:text-left"><h3 class="text-2xl font-bold text-white mb-2">${ssrInterpolate(unref(t).footer.title)}</h3><p class="text-zinc-400">${ssrInterpolate(unref(t).footer.cta)}</p></div><div class="flex items-center gap-6"><a href="mailto:matthieufrain.pro@gmail.com" class="text-zinc-400 hover:text-indigo-400 transition-colors">`);
-      _push(ssrRenderComponent(unref(Mail), { class: "w-6 h-6" }, null, _parent));
-      _push(`<span class="sr-only">Email</span></a><a href="https://github.com/MatthieuFrain" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-indigo-400 transition-colors">`);
-      _push(ssrRenderComponent(unref(Github), { class: "w-6 h-6" }, null, _parent));
-      _push(`<span class="sr-only">GitHub</span></a><a href="https://www.linkedin.com/in/matthieu-frain-0628511a6/" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-indigo-400 transition-colors">`);
-      _push(ssrRenderComponent(unref(Linkedin), { class: "w-6 h-6" }, null, _parent));
-      _push(`<span class="sr-only">LinkedIn</span></a></div></div><div class="mt-12 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left text-zinc-600 text-sm"><p>© ${ssrInterpolate((/* @__PURE__ */ new Date()).getFullYear())} ${ssrInterpolate(unref(t).footer.copyright)}</p><a href="/sitemap.xml" class="hover:text-zinc-400 transition-colors">Sitemap</a></div></footer>`);
+      const _component_NuxtLink = __nuxt_component_0;
+      _push(`<footer${ssrRenderAttrs(mergeProps({
+        id: "contact",
+        class: "py-24 border-t border-white/5 relative z-10 bg-zinc-950"
+      }, _attrs))}><div class="container mx-auto px-4"><div class="grid grid-cols-1 md:grid-cols-2 gap-16"><div><h2 class="text-4xl md:text-6xl font-display font-bold mb-8">${ssrInterpolate(unref(t).footer.title)}</h2><a href="mailto:matthieufrain.pro@gmail.com" class="inline-flex items-center gap-2 text-xl text-indigo-400 hover:text-indigo-300 transition-colors">${ssrInterpolate(unref(t).footer.cta)} <span class="text-2xl">→</span></a></div><div class="flex flex-col justify-end"><div class="space-y-6"><!--[-->`);
+      ssrRenderList(socialLinks, (link) => {
+        _push(`<a${ssrRenderAttr("href", link.href)} target="_blank" rel="noopener noreferrer" class="flex items-center gap-4 text-zinc-400 hover:text-white transition-colors group"><div class="p-3 rounded-full bg-white/5 group-hover:bg-white/10 transition-colors">`);
+        ssrRenderVNode(_push, createVNode(resolveDynamicComponent(link.icon), { class: "w-5 h-5" }, null), _parent);
+        _push(`</div><span class="text-lg">${ssrInterpolate(link.label)}</span></a>`);
+      });
+      _push(`<!--]--></div></div></div><div class="mt-24 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-zinc-500"><p>© ${ssrInterpolate((/* @__PURE__ */ new Date()).getFullYear())} ${ssrInterpolate(unref(t).footer.copyright)}</p><div class="flex gap-6">`);
+      _push(ssrRenderComponent(_component_NuxtLink, {
+        to: "/sitemap.xml",
+        class: "hover:text-zinc-300 transition-colors"
+      }, {
+        default: withCtx((_, _push2, _parent2, _scopeId) => {
+          if (_push2) {
+            _push2(`Sitemap`);
+          } else {
+            return [
+              createTextVNode("Sitemap")
+            ];
+          }
+        }),
+        _: 1
+      }, _parent));
+      _push(`</div></div></div></footer>`);
     };
   }
-};
+});
 const _sfc_setup$3 = _sfc_main$3.setup;
 _sfc_main$3.setup = (props, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("components/TheFooter.vue");
   return _sfc_setup$3 ? _sfc_setup$3(props, ctx) : void 0;
 };
-const _sfc_main$2 = {
+const _sfc_main$2 = /* @__PURE__ */ defineComponent({
   __name: "app",
   __ssrInlineRender: true,
   setup(__props) {
     useSeoMeta({
       title: "Matthieu Frain | Creative Developer",
-      ogTitle: "Matthieu Frain | Creative Developer",
       description: "Portfolio of Matthieu Frain, a Creative Developer & SEO Specialist crafting the future of digital experiences.",
+      ogTitle: "Matthieu Frain | Creative Developer",
       ogDescription: "Portfolio of Matthieu Frain, a Creative Developer & SEO Specialist crafting the future of digital experiences.",
       ogImage: "/og-image.jpg",
       twitterCard: "summary_large_image"
     });
     return (_ctx, _push, _parent, _attrs) => {
-      const _component_CustomCursor = _sfc_main$8;
-      const _component_TheNavbar = _sfc_main$7;
+      const _component_ClientOnly = __nuxt_component_0$1;
+      const _component_TheNavbar = __nuxt_component_1;
       const _component_HeroSection = _sfc_main$6;
       const _component_BentoGrid = _sfc_main$5;
       const _component_SelectedWorks = _sfc_main$4;
       const _component_TheFooter = _sfc_main$3;
-      _push(`<div${ssrRenderAttrs(mergeProps({ class: "relative min-h-screen bg-zinc-950 text-zinc-200 selection:bg-indigo-500 selection:text-white overflow-x-hidden font-sans" }, _attrs))}><div class="fixed inset-0 z-[9998] pointer-events-none opacity-[0.05] mix-blend-overlay" style="${ssrRenderStyle({ "background-image": "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')" })}"></div>`);
-      _push(ssrRenderComponent(_component_CustomCursor, null, null, _parent));
+      _push(`<div${ssrRenderAttrs(mergeProps({ class: "bg-zinc-950 text-white min-h-screen selection:bg-indigo-500/30 selection:text-indigo-200" }, _attrs))}>`);
+      _push(ssrRenderComponent(_component_ClientOnly, null, {}, _parent));
       _push(ssrRenderComponent(_component_TheNavbar, null, null, _parent));
-      _push(`<main class="relative z-10">`);
+      _push(`<main>`);
       _push(ssrRenderComponent(_component_HeroSection, null, null, _parent));
       _push(ssrRenderComponent(_component_BentoGrid, null, null, _parent));
       _push(ssrRenderComponent(_component_SelectedWorks, null, null, _parent));
+      _push(`</main>`);
       _push(ssrRenderComponent(_component_TheFooter, null, null, _parent));
-      _push(`</main></div>`);
+      _push(`</div>`);
     };
   }
-};
+});
 const _sfc_setup$2 = _sfc_main$2.setup;
 _sfc_main$2.setup = (props, ctx) => {
   const ssrContext = useSSRContext();
@@ -3550,8 +3561,8 @@ const _sfc_main$1 = {
     const statusMessage = _error.statusMessage ?? (is404 ? "Page Not Found" : "Internal Server Error");
     const description = _error.message || _error.toString();
     const stack = void 0;
-    const _Error404 = defineAsyncComponent(() => import('./error-404-BmxFJdas.mjs').then((r) => r.default || r));
-    const _Error = defineAsyncComponent(() => import('./error-500-CWvb1Jy_.mjs').then((r) => r.default || r));
+    const _Error404 = defineAsyncComponent(() => import('./error-404-BSptk7-d.mjs'));
+    const _Error = defineAsyncComponent(() => import('./error-500-CSrmtnnI.mjs'));
     const ErrorTemplate = is404 ? _Error404 : _Error;
     return (_ctx, _push, _parent, _attrs) => {
       _push(ssrRenderComponent(unref(ErrorTemplate), mergeProps({ statusCode: unref(statusCode), statusMessage: unref(statusMessage), description: unref(description), stack: unref(stack) }, _attrs), null, _parent));
@@ -3575,7 +3586,7 @@ const _sfc_main = {
     const SingleRenderer = false;
     provide(PageRouteSymbol, useRoute());
     nuxtApp.hooks.callHookWith((hooks) => hooks.map((hook) => hook()), "vue:setup");
-    const error = useError();
+    const error = /* @__PURE__ */ useError();
     const abortRender = error.value && !nuxtApp.ssrContext.error;
     onErrorCaptured((err, target, info) => {
       nuxtApp.hooks.callHook("vue:error", err, target, info).catch((hookError) => console.error("[nuxt] Error in `vue:error` hook", hookError));
@@ -3622,9 +3633,9 @@ let entry;
       await nuxt.hooks.callHook("app:created", vueApp);
     } catch (error) {
       await nuxt.hooks.callHook("app:error", error);
-      nuxt.payload.error = nuxt.payload.error || createError(error);
+      nuxt.payload.error ||= createError(error);
     }
-    if (ssrContext == null ? void 0 : ssrContext._renderResponse) {
+    if (ssrContext?._renderResponse) {
       throw new Error("skipping render");
     }
     return vueApp;
@@ -3632,5 +3643,5 @@ let entry;
 }
 const entry_default = (ssrContext) => entry(ssrContext);
 
-export { useNuxtApp as a, useRuntimeConfig as b, nuxtLinkDefaults as c, useHead as d, entry_default as default, navigateTo as n, resolveRouteObject as r, useRouter as u };
+export { _export_sfc as _, __nuxt_component_0 as a, entry_default as default, useHead as u };
 //# sourceMappingURL=server.mjs.map

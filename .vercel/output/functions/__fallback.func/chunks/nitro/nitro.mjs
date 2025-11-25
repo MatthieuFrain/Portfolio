@@ -1,11 +1,10 @@
-import process from 'node:process';globalThis._importMeta_=globalThis._importMeta_||{url:"file:///_entry.js",env:process.env};import http from 'node:http';
+import http from 'node:http';
 import https from 'node:https';
 import { EventEmitter } from 'node:events';
 import { Buffer as Buffer$1 } from 'node:buffer';
 import { promises, existsSync } from 'node:fs';
-import { resolve as resolve$1, dirname, join } from 'node:path';
+import { resolve, dirname, join } from 'node:path';
 import { createHash } from 'node:crypto';
-import { toValue } from 'vue';
 
 const suspectProtoRx = /"(?:_|\\u0{2}5[Ff]){2}(?:p|\\u0{2}70)(?:r|\\u0{2}72)(?:o|\\u0{2}6[Ff])(?:t|\\u0{2}74)(?:o|\\u0{2}6[Ff])(?:_|\\u0{2}5[Ff]){2}"\s*:/;
 const suspectConstructorRx = /"(?:c|\\u0063)(?:o|\\u006[Ff])(?:n|\\u006[Ee])(?:s|\\u0073)(?:t|\\u0074)(?:r|\\u0072)(?:u|\\u0075)(?:c|\\u0063)(?:t|\\u0074)(?:o|\\u006[Ff])(?:r|\\u0072)"\s*:/;
@@ -310,19 +309,6 @@ function joinRelativeURL(..._input) {
   }
   return url;
 }
-function withHttps(input) {
-  return withProtocol(input, "https://");
-}
-function withProtocol(input, protocol) {
-  let match = input.match(PROTOCOL_REGEX);
-  if (!match) {
-    match = input.match(/^\/{2,}/);
-  }
-  if (!match) {
-    return protocol + input;
-  }
-  return protocol + input.slice(match[0].length);
-}
 function isEqual(a, b, options = {}) {
   if (!options.trailingSlash) {
     a = withTrailingSlash(a);
@@ -357,7 +343,7 @@ function parseURL(input = "", defaultProto) {
     };
   }
   if (!hasProtocol(input, { acceptRelative: true })) {
-    return defaultProto ? parseURL(defaultProto + input) : parsePath(input);
+    return parsePath(input);
   }
   const [, protocol = "", auth, hostAndPath = ""] = input.replace(/\\/g, "/").match(/^[\s\0]*([\w+.-]{2,}:)?\/\/([^/@]+@)?(.*)/) || [];
   let [, host = "", path = ""] = hostAndPath.match(/([^#/?]*)(.*)?/) || [];
@@ -836,7 +822,6 @@ function getRequestHeader(event, name) {
   const value = headers[name.toLowerCase()];
   return value;
 }
-const getHeader = getRequestHeader;
 function getRequestHost(event, opts = {}) {
   if (opts.xForwardedHost) {
     const _header = event.node.req.headers["x-forwarded-host"];
@@ -1150,7 +1135,17 @@ const setHeaders = setResponseHeaders;
 function setResponseHeader(event, name, value) {
   event.node.res.setHeader(name, value);
 }
-const setHeader = setResponseHeader;
+function appendResponseHeader(event, name, value) {
+  let current = event.node.res.getHeader(name);
+  if (!current) {
+    event.node.res.setHeader(name, value);
+    return;
+  }
+  if (!Array.isArray(current)) {
+    current = [current.toString()];
+  }
+  event.node.res.setHeader(name, [...current, value]);
+}
 function isStream(data) {
   if (!data || typeof data !== "object") {
     return false;
@@ -2525,8 +2520,8 @@ function createNodeFetch() {
 }
 const fetch = globalThis.fetch ? (...args) => globalThis.fetch(...args) : createNodeFetch();
 const Headers$1 = globalThis.Headers || s$1;
-const AbortController$1 = globalThis.AbortController || i;
-const ofetch = createFetch({ fetch, Headers: Headers$1, AbortController: AbortController$1 });
+const AbortController = globalThis.AbortController || i;
+const ofetch = createFetch({ fetch, Headers: Headers$1, AbortController });
 const $fetch = ofetch;
 
 function wrapToPromise(value) {
@@ -2542,7 +2537,7 @@ function asyncCall(function_, ...arguments_) {
     return Promise.reject(error);
   }
 }
-function isPrimitive$1(value) {
+function isPrimitive(value) {
   const type = typeof value;
   return value === null || type !== "object" && type !== "function";
 }
@@ -2551,7 +2546,7 @@ function isPureObject(value) {
   return !proto || proto.isPrototypeOf(Object);
 }
 function stringify(value) {
-  if (isPrimitive$1(value)) {
+  if (isPrimitive(value)) {
     return String(value);
   }
   if (isPureObject(value) || Array.isArray(value)) {
@@ -3204,7 +3199,7 @@ async function readdirRecursive(dir, ignore, maxDepth) {
   const files = [];
   await Promise.all(
     entries.map(async (entry) => {
-      const entryPath = resolve$1(dir, entry.name);
+      const entryPath = resolve(dir, entry.name);
       if (entry.isDirectory()) {
         if (maxDepth === void 0 || maxDepth > 0) {
           const dirFiles = await readdirRecursive(
@@ -3227,7 +3222,7 @@ async function rmRecursive(dir) {
   const entries = await readdir(dir);
   await Promise.all(
     entries.map((entry) => {
-      const entryPath = resolve$1(dir, entry.name);
+      const entryPath = resolve(dir, entry.name);
       if (entry.isDirectory()) {
         return rmRecursive(entryPath).then(() => promises.rmdir(entryPath));
       } else {
@@ -3243,7 +3238,7 @@ const unstorage_47drivers_47fs_45lite = defineDriver((opts = {}) => {
   if (!opts.base) {
     throw createRequiredError(DRIVER_NAME, "base");
   }
-  opts.base = resolve$1(opts.base);
+  opts.base = resolve(opts.base);
   const r = (key) => {
     if (PATH_TRAVERSE_RE.test(key)) {
       throw createError(
@@ -4019,7 +4014,7 @@ function _expandFromEnv(value) {
 const _inlineRuntimeConfig = {
   "app": {
     "baseURL": "/",
-    "buildId": "597edca9-6a55-454c-8112-b58b3757b547",
+    "buildId": "182012aa-5a26-488d-aa05-a974ff1502d0",
     "buildAssetsDir": "/_nuxt/",
     "cdnURL": ""
   },
@@ -4029,24 +4024,6 @@ const _inlineRuntimeConfig = {
       "/__nuxt_error": {
         "cache": false,
         "isr": false
-      },
-      "/sitemap.xsl": {
-        "headers": {
-          "Content-Type": "application/xslt+xml"
-        }
-      },
-      "/sitemap.xml": {
-        "swr": 600,
-        "cache": {
-          "swr": true,
-          "maxAge": 600,
-          "varies": [
-            "X-Forwarded-Host",
-            "X-Forwarded-Proto",
-            "Host"
-          ]
-        },
-        "isr": true
       },
       "/_nuxt/builds/meta/**": {
         "headers": {
@@ -4067,75 +4044,6 @@ const _inlineRuntimeConfig = {
   },
   "public": {
     "motion": {}
-  },
-  "sitemap": {
-    "isI18nMapped": false,
-    "sitemapName": "sitemap.xml",
-    "isMultiSitemap": false,
-    "excludeAppSources": [],
-    "cacheMaxAgeSeconds": 600,
-    "autoLastmod": false,
-    "defaultSitemapsChunkSize": 1000,
-    "sortEntries": true,
-    "debug": false,
-    "discoverImages": true,
-    "discoverVideos": true,
-    "isNuxtContentDocumentDriven": false,
-    "xsl": "/__sitemap__/style.xsl",
-    "xslTips": true,
-    "xslColumns": [
-      {
-        "label": "URL",
-        "width": "50%"
-      },
-      {
-        "label": "Images",
-        "width": "25%",
-        "select": "count(image:image)"
-      },
-      {
-        "label": "Last Updated",
-        "width": "25%",
-        "select": "concat(substring(sitemap:lastmod,0,11),concat(' ', substring(sitemap:lastmod,12,5)),concat(' ', substring(sitemap:lastmod,20,6)))"
-      }
-    ],
-    "credits": true,
-    "version": "5.3.5",
-    "sitemaps": {
-      "sitemap.xml": {
-        "sitemapName": "sitemap.xml",
-        "route": "sitemap.xml",
-        "defaults": {},
-        "include": [],
-        "exclude": [
-          "/_nuxt/**",
-          "/_**"
-        ],
-        "includeAppSources": true
-      }
-    }
-  },
-  "nuxt-site-config": {
-    "stack": [
-      {
-        "_context": "system",
-        "_priority": -15,
-        "name": "Portfolio",
-        "env": "production"
-      },
-      {
-        "_context": "package.json",
-        "_priority": -10,
-        "name": "portfolio"
-      },
-      {
-        "_priority": -3,
-        "_context": "nuxt-site-config:config",
-        "url": "https://www.matthieufrain.dev"
-      }
-    ],
-    "version": "2.2.21",
-    "debug": false
   }
 };
 const envOptions = {
@@ -4158,18 +4066,7 @@ function useRuntimeConfig(event) {
   event.context.nitro.runtimeConfig = runtimeConfig;
   return runtimeConfig;
 }
-const _sharedAppConfig = _deepFreeze(klona(appConfig));
-function useAppConfig(event) {
-  if (!event) {
-    return _sharedAppConfig;
-  }
-  if (event.context.nitro.appConfig) {
-    return event.context.nitro.appConfig;
-  }
-  const appConfig$1 = klona(appConfig);
-  event.context.nitro.appConfig = appConfig$1;
-  return appConfig$1;
-}
+_deepFreeze(klona(appConfig));
 function _deepFreeze(object) {
   const propNames = Object.getOwnPropertyNames(object);
   for (const name of propNames) {
@@ -4392,55 +4289,27 @@ function hasReqHeader(event, name, includes) {
   const value = getRequestHeader(event, name);
   return value && typeof value === "string" && value.toLowerCase().includes(includes);
 }
-function normalizeError(error, isDev) {
-  const cwd = typeof process.cwd === "function" ? process.cwd() : "/";
-  const stack = (error.unhandled || error.fatal) ? [] : (error.stack || "").split("\n").splice(1).filter((line) => line.includes("at ")).map((line) => {
-    const text = line.replace(cwd + "/", "./").replace("webpack:/", "").replace("file://", "").trim();
-    return {
-      text,
-      internal: line.includes("node_modules") && !line.includes(".cache") || line.includes("internal") || line.includes("new Promise")
-    };
-  });
-  const statusCode = error.statusCode || 500;
-  const statusMessage = error.statusMessage ?? (statusCode === 404 ? "Not Found" : "");
-  const message = error.unhandled ? "internal server error" : error.message || error.toString();
-  return {
-    stack,
-    statusCode,
-    statusMessage,
-    message
-  };
-}
 
-const errorHandler$0 = (async function errorhandler(error, event) {
-  const { stack, statusCode, statusMessage, message } = normalizeError(error);
-  const errorObject = {
-    url: event.path,
-    statusCode,
-    statusMessage,
-    message,
-    stack: "",
-    // TODO: check and validate error.data for serialisation into query
-    data: error.data
-  };
-  if (error.unhandled || error.fatal) {
-    const tags = [
-      "[nuxt]",
-      "[request error]",
-      error.unhandled && "[unhandled]",
-      error.fatal && "[fatal]",
-      Number(errorObject.statusCode) !== 200 && `[${errorObject.statusCode}]`
-    ].filter(Boolean).join(" ");
-    console.error(tags, errorObject.message + "\n" + stack.map((l) => "  " + l.text).join("  \n"));
-  }
-  if (event.handled) {
+const errorHandler$0 = (async function errorhandler(error, event, { defaultHandler }) {
+  if (event.handled || isJsonRequest(event)) {
     return;
   }
-  setResponseStatus(event, errorObject.statusCode !== 200 && errorObject.statusCode || 500, errorObject.statusMessage);
-  if (isJsonRequest(event)) {
-    setResponseHeader(event, "Content-Type", "application/json");
-    return send(event, JSON.stringify(errorObject));
+  const defaultRes = await defaultHandler(error, event, { json: true });
+  const statusCode = error.statusCode || 500;
+  if (statusCode === 404 && defaultRes.status === 302) {
+    setResponseHeaders(event, defaultRes.headers);
+    setResponseStatus(event, defaultRes.status, defaultRes.statusText);
+    return send(event, JSON.stringify(defaultRes.body, null, 2));
   }
+  const errorObject = defaultRes.body;
+  const url = new URL(errorObject.url);
+  errorObject.url = withoutBase(url.pathname, useRuntimeConfig(event).app.baseURL) + url.search + url.hash;
+  errorObject.message ||= "Server Error";
+  errorObject.data ||= error.data;
+  errorObject.statusMessage ||= error.statusMessage;
+  delete defaultRes.headers["content-type"];
+  delete defaultRes.headers["content-security-policy"];
+  setResponseHeaders(event, defaultRes.headers);
   const reqHeaders = getRequestHeaders(event);
   const isRenderingError = event.path.startsWith("/__nuxt_error") || !!reqHeaders["x-nuxt-error"];
   const res = isRenderingError ? null : await useNitroApp().localFetch(
@@ -4450,22 +4319,23 @@ const errorHandler$0 = (async function errorhandler(error, event) {
       redirect: "manual"
     }
   ).catch(() => null);
+  if (event.handled) {
+    return;
+  }
   if (!res) {
     const { template } = await import('../_/error-500.mjs');
-    if (event.handled) {
-      return;
-    }
     setResponseHeader(event, "Content-Type", "text/html;charset=UTF-8");
     return send(event, template(errorObject));
   }
   const html = await res.text();
-  if (event.handled) {
-    return;
-  }
   for (const [header, value] of res.headers.entries()) {
+    if (header === "set-cookie") {
+      appendResponseHeader(event, header, value);
+      continue;
+    }
     setResponseHeader(event, header, value);
   }
-  setResponseStatus(event, res.status && res.status !== 200 ? res.status : void 0, res.statusText);
+  setResponseStatus(event, res.status && res.status !== 200 ? res.status : defaultRes.status, res.statusText || defaultRes.statusText);
   return send(event, html);
 });
 
@@ -4551,1475 +4421,18 @@ async function errorHandler(error, event) {
   // H3 will handle fallback
 }
 
-function defineNitroPlugin(def) {
-  return def;
-}
-
-function defineRenderHandler(render) {
-  const runtimeConfig = useRuntimeConfig();
-  return eventHandler(async (event) => {
-    const nitroApp = useNitroApp();
-    const ctx = { event, render, response: void 0 };
-    await nitroApp.hooks.callHook("render:before", ctx);
-    if (!ctx.response) {
-      if (event.path === `${runtimeConfig.app.baseURL}favicon.ico`) {
-        setResponseHeader(event, "Content-Type", "image/x-icon");
-        return send(
-          event,
-          "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-        );
-      }
-      ctx.response = await ctx.render(event);
-      if (!ctx.response) {
-        const _currentStatus = getResponseStatus(event);
-        setResponseStatus(event, _currentStatus === 200 ? 500 : _currentStatus);
-        return send(
-          event,
-          "No response returned from render handler: " + event.path
-        );
-      }
-    }
-    await nitroApp.hooks.callHook("render:response", ctx.response, ctx);
-    if (ctx.response.headers) {
-      setResponseHeaders(event, ctx.response.headers);
-    }
-    if (ctx.response.statusCode || ctx.response.statusMessage) {
-      setResponseStatus(
-        event,
-        ctx.response.statusCode,
-        ctx.response.statusMessage
-      );
-    }
-    return ctx.response.body;
-  });
-}
-
-function baseURL() {
-  return useRuntimeConfig().app.baseURL;
-}
-function buildAssetsDir() {
-  return useRuntimeConfig().app.buildAssetsDir;
-}
-function buildAssetsURL(...path) {
-  return joinRelativeURL(publicAssetsURL(), buildAssetsDir(), ...path);
-}
-function publicAssetsURL(...path) {
-  const app = useRuntimeConfig().app;
-  const publicBase = app.cdnURL || app.baseURL;
-  return path.length ? joinRelativeURL(publicBase, ...path) : publicBase;
-}
-
-function normalizeSiteConfig(config) {
-  if (typeof config.indexable !== "undefined")
-    config.indexable = String(config.indexable) !== "false";
-  if (typeof config.trailingSlash !== "undefined" && !config.trailingSlash)
-    config.trailingSlash = String(config.trailingSlash) !== "false";
-  if (config.url && !hasProtocol(config.url, { acceptRelative: true, strict: false }))
-    config.url = withHttps(config.url);
-  const keys = Object.keys(config).sort((a, b) => a.localeCompare(b));
-  const newConfig = {};
-  for (const k of keys)
-    newConfig[k] = config[k];
-  return newConfig;
-}
-function createSiteConfigStack(options) {
-  const debug = options?.debug || false;
-  const stack = [];
-  function push(input) {
-    if (!input || typeof input !== "object" || Object.keys(input).length === 0)
-      return;
-    if (!input._context && debug) {
-      let lastFunctionName = new Error("tmp").stack?.split("\n")[2].split(" ")[5];
-      if (lastFunctionName?.includes("/"))
-        lastFunctionName = "anonymous";
-      input._context = lastFunctionName;
-    }
-    const entry = {};
-    for (const k in input) {
-      const val = input[k];
-      if (typeof val !== "undefined" && val !== "")
-        entry[k] = val;
-    }
-    if (Object.keys(entry).filter((k) => !k.startsWith("_")).length > 0)
-      stack.push(entry);
-  }
-  function get(options2) {
-    const siteConfig = {};
-    if (options2?.debug)
-      siteConfig._context = {};
-    for (const o in stack.sort((a, b) => (a._priority || 0) - (b._priority || 0))) {
-      for (const k in stack[o]) {
-        const key = k;
-        const val = options2?.resolveRefs ? toValue(stack[o][k]) : stack[o][k];
-        if (!k.startsWith("_") && typeof val !== "undefined") {
-          siteConfig[k] = val;
-          if (options2?.debug)
-            siteConfig._context[key] = stack[o]._context?.[key] || stack[o]._context || "anonymous";
-        }
-      }
-    }
-    return options2?.skipNormalize ? siteConfig : normalizeSiteConfig(siteConfig);
-  }
-  return {
-    stack,
-    push,
-    get
-  };
-}
-
-function envSiteConfig(env) {
-  return Object.fromEntries(Object.entries(env).filter(([k]) => k.startsWith("NUXT_SITE_") || k.startsWith("NUXT_PUBLIC_SITE_")).map(([k, v]) => [
-    k.replace(/^NUXT_(PUBLIC_)?SITE_/, "").split("_").map((s, i) => i === 0 ? s.toLowerCase() : s[0].toUpperCase() + s.slice(1).toLowerCase()).join(""),
-    v
-  ]));
-}
-
-function useNitroOrigin(e) {
-  process.env.NITRO_SSL_CERT;
-  process.env.NITRO_SSL_KEY;
-  let host = process.env.NITRO_HOST || process.env.HOST || false;
-  let port = false;
-  let protocol = "https" ;
-  {
-    host = getRequestHost(e, { xForwardedHost: true }) || host;
-    protocol = getRequestProtocol(e, { xForwardedProto: true }) || protocol;
-  }
-  if (typeof host === "string" && host.includes(":")) {
-    port = host.split(":").pop();
-    host = host.split(":")[0];
-  }
-  port = port ? `:${port}` : "";
-  return withTrailingSlash(`${protocol}://${host}${port}`);
-}
-
-function useSiteConfig(e, _options) {
-  e.context.siteConfig = e.context.siteConfig || createSiteConfigStack();
-  const options = defu(_options, useRuntimeConfig(e)["nuxt-site-config"], { debug: false });
-  return e.context.siteConfig.get(options);
-}
-
-function resolveSitePath(pathOrUrl, options) {
-  let path = pathOrUrl;
-  if (hasProtocol(pathOrUrl, { strict: false, acceptRelative: true })) {
-    const parsed = parseURL(pathOrUrl);
-    path = parsed.pathname;
-  }
-  const base = withLeadingSlash(options.base || "/");
-  if (base !== "/" && path.startsWith(base)) {
-    path = path.slice(base.length);
-  }
-  let origin = withoutTrailingSlash(options.absolute ? options.siteUrl : "");
-  if (base !== "/" && origin.endsWith(base)) {
-    origin = origin.slice(0, origin.indexOf(base));
-  }
-  const baseWithOrigin = options.withBase ? withBase(base, origin || "/") : origin;
-  const resolvedUrl = withBase(path, baseWithOrigin);
-  return path === "/" && !options.withBase ? withTrailingSlash(resolvedUrl) : fixSlashes(options.trailingSlash, resolvedUrl);
-}
-function isPathFile(path) {
-  const lastSegment = path.split("/").pop();
-  return !!(lastSegment || path).match(/\.[0-9a-z]+$/i)?.[0];
-}
-function fixSlashes(trailingSlash, pathOrUrl) {
-  const $url = parseURL(pathOrUrl);
-  if (isPathFile($url.pathname))
-    return pathOrUrl;
-  const fixedPath = trailingSlash ? withTrailingSlash($url.pathname) : withoutTrailingSlash($url.pathname);
-  return `${$url.protocol ? `${$url.protocol}//` : ""}${$url.host || ""}${fixedPath}${$url.search || ""}${$url.hash || ""}`;
-}
-
-function createSitePathResolver(e, options = {}) {
-  const siteConfig = useSiteConfig(e);
-  const nitroOrigin = useNitroOrigin(e);
-  const nuxtBase = useRuntimeConfig(e).app.baseURL || "/";
-  return (path) => {
-    return resolveSitePath(path, {
-      ...options,
-      siteUrl: options.canonical !== false || false ? siteConfig.url : nitroOrigin,
-      trailingSlash: siteConfig.trailingSlash,
-      base: nuxtBase
-    });
-  };
-}
-
-const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$";
-const unsafeChars = /[<>\b\f\n\r\t\0\u2028\u2029]/g;
-const reserved = /^(?:do|if|in|for|int|let|new|try|var|byte|case|char|else|enum|goto|long|this|void|with|await|break|catch|class|const|final|float|short|super|throw|while|yield|delete|double|export|import|native|return|switch|throws|typeof|boolean|default|extends|finally|package|private|abstract|continue|debugger|function|volatile|interface|protected|transient|implements|instanceof|synchronized)$/;
-const escaped = {
-  "<": "\\u003C",
-  ">": "\\u003E",
-  "/": "\\u002F",
-  "\\": "\\\\",
-  "\b": "\\b",
-  "\f": "\\f",
-  "\n": "\\n",
-  "\r": "\\r",
-  "	": "\\t",
-  "\0": "\\0",
-  "\u2028": "\\u2028",
-  "\u2029": "\\u2029"
-};
-const objectProtoOwnPropertyNames = Object.getOwnPropertyNames(Object.prototype).sort().join("\0");
-function devalue(value) {
-  const counts = /* @__PURE__ */ new Map();
-  let logNum = 0;
-  function log(message) {
-    if (logNum < 100) {
-      console.warn(message);
-      logNum += 1;
-    }
-  }
-  function walk(thing) {
-    if (typeof thing === "function") {
-      log(`Cannot stringify a function ${thing.name}`);
-      return;
-    }
-    if (counts.has(thing)) {
-      counts.set(thing, counts.get(thing) + 1);
-      return;
-    }
-    counts.set(thing, 1);
-    if (!isPrimitive(thing)) {
-      const type = getType(thing);
-      switch (type) {
-        case "Number":
-        case "String":
-        case "Boolean":
-        case "Date":
-        case "RegExp":
-          return;
-        case "Array":
-          thing.forEach(walk);
-          break;
-        case "Set":
-        case "Map":
-          Array.from(thing).forEach(walk);
-          break;
-        default:
-          const proto = Object.getPrototypeOf(thing);
-          if (proto !== Object.prototype && proto !== null && Object.getOwnPropertyNames(proto).sort().join("\0") !== objectProtoOwnPropertyNames) {
-            if (typeof thing.toJSON !== "function") {
-              log(`Cannot stringify arbitrary non-POJOs ${thing.constructor.name}`);
-            }
-          } else if (Object.getOwnPropertySymbols(thing).length > 0) {
-            log(`Cannot stringify POJOs with symbolic keys ${Object.getOwnPropertySymbols(thing).map((symbol) => symbol.toString())}`);
-          } else {
-            Object.keys(thing).forEach((key) => walk(thing[key]));
-          }
-      }
-    }
-  }
-  walk(value);
-  const names = /* @__PURE__ */ new Map();
-  Array.from(counts).filter((entry) => entry[1] > 1).sort((a, b) => b[1] - a[1]).forEach((entry, i) => {
-    names.set(entry[0], getName(i));
-  });
-  function stringify(thing) {
-    if (names.has(thing)) {
-      return names.get(thing);
-    }
-    if (isPrimitive(thing)) {
-      return stringifyPrimitive(thing);
-    }
-    const type = getType(thing);
-    switch (type) {
-      case "Number":
-      case "String":
-      case "Boolean":
-        return `Object(${stringify(thing.valueOf())})`;
-      case "RegExp":
-        return thing.toString();
-      case "Date":
-        return `new Date(${thing.getTime()})`;
-      case "Array":
-        const members = thing.map((v, i) => i in thing ? stringify(v) : "");
-        const tail = thing.length === 0 || thing.length - 1 in thing ? "" : ",";
-        return `[${members.join(",")}${tail}]`;
-      case "Set":
-      case "Map":
-        return `new ${type}([${Array.from(thing).map(stringify).join(",")}])`;
-      default:
-        if (thing.toJSON) {
-          let json = thing.toJSON();
-          if (getType(json) === "String") {
-            try {
-              json = JSON.parse(json);
-            } catch (e) {
-            }
-          }
-          return stringify(json);
-        }
-        if (Object.getPrototypeOf(thing) === null) {
-          if (Object.keys(thing).length === 0) {
-            return "Object.create(null)";
-          }
-          return `Object.create(null,{${Object.keys(thing).map((key) => `${safeKey(key)}:{writable:true,enumerable:true,value:${stringify(thing[key])}}`).join(",")}})`;
-        }
-        return `{${Object.keys(thing).map((key) => `${safeKey(key)}:${stringify(thing[key])}`).join(",")}}`;
-    }
-  }
-  const str = stringify(value);
-  if (names.size) {
-    const params = [];
-    const statements = [];
-    const values = [];
-    names.forEach((name, thing) => {
-      params.push(name);
-      if (isPrimitive(thing)) {
-        values.push(stringifyPrimitive(thing));
-        return;
-      }
-      const type = getType(thing);
-      switch (type) {
-        case "Number":
-        case "String":
-        case "Boolean":
-          values.push(`Object(${stringify(thing.valueOf())})`);
-          break;
-        case "RegExp":
-          values.push(thing.toString());
-          break;
-        case "Date":
-          values.push(`new Date(${thing.getTime()})`);
-          break;
-        case "Array":
-          values.push(`Array(${thing.length})`);
-          thing.forEach((v, i) => {
-            statements.push(`${name}[${i}]=${stringify(v)}`);
-          });
-          break;
-        case "Set":
-          values.push("new Set");
-          statements.push(`${name}.${Array.from(thing).map((v) => `add(${stringify(v)})`).join(".")}`);
-          break;
-        case "Map":
-          values.push("new Map");
-          statements.push(`${name}.${Array.from(thing).map(([k, v]) => `set(${stringify(k)}, ${stringify(v)})`).join(".")}`);
-          break;
-        default:
-          values.push(Object.getPrototypeOf(thing) === null ? "Object.create(null)" : "{}");
-          Object.keys(thing).forEach((key) => {
-            statements.push(`${name}${safeProp(key)}=${stringify(thing[key])}`);
-          });
-      }
-    });
-    statements.push(`return ${str}`);
-    return `(function(${params.join(",")}){${statements.join(";")}}(${values.join(",")}))`;
-  } else {
-    return str;
-  }
-}
-function getName(num) {
-  let name = "";
-  do {
-    name = chars[num % chars.length] + name;
-    num = ~~(num / chars.length) - 1;
-  } while (num >= 0);
-  return reserved.test(name) ? `${name}0` : name;
-}
-function isPrimitive(thing) {
-  return Object(thing) !== thing;
-}
-function stringifyPrimitive(thing) {
-  if (typeof thing === "string") {
-    return stringifyString(thing);
-  }
-  if (thing === void 0) {
-    return "void 0";
-  }
-  if (thing === 0 && 1 / thing < 0) {
-    return "-0";
-  }
-  const str = String(thing);
-  if (typeof thing === "number") {
-    return str.replace(/^(-)?0\./, "$1.");
-  }
-  return str;
-}
-function getType(thing) {
-  return Object.prototype.toString.call(thing).slice(8, -1);
-}
-function escapeUnsafeChar(c) {
-  return escaped[c] || c;
-}
-function escapeUnsafeChars(str) {
-  return str.replace(unsafeChars, escapeUnsafeChar);
-}
-function safeKey(key) {
-  return /^[_$a-zA-Z][_$a-zA-Z0-9]*$/.test(key) ? key : escapeUnsafeChars(JSON.stringify(key));
-}
-function safeProp(key) {
-  return /^[_$a-zA-Z][_$a-zA-Z0-9]*$/.test(key) ? `.${key}` : `[${escapeUnsafeChars(JSON.stringify(key))}]`;
-}
-function stringifyString(str) {
-  let result = '"';
-  for (let i = 0; i < str.length; i += 1) {
-    const char = str.charAt(i);
-    const code = char.charCodeAt(0);
-    if (char === '"') {
-      result += '\\"';
-    } else if (char in escaped) {
-      result += escaped[char];
-    } else if (code >= 55296 && code <= 57343) {
-      const next = str.charCodeAt(i + 1);
-      if (code <= 56319 && (next >= 56320 && next <= 57343)) {
-        result += char + str[++i];
-      } else {
-        result += `\\u${code.toString(16).toUpperCase()}`;
-      }
-    } else {
-      result += char;
-    }
-  }
-  result += '"';
-  return result;
-}
-
-const _bh4DP29JQlRVpq9jd_FDANSgq2mYCl7utA3cv_8IZ04 = defineNitroPlugin(async (nitroApp) => {
-  nitroApp.hooks.hook("render:html", async (ctx, { event }) => {
-    const routeOptions = getRouteRules(event);
-    const isIsland = process.env.NUXT_COMPONENT_ISLANDS && event.path.startsWith("/__nuxt_island");
-    event.path;
-    const noSSR = event.context.nuxt?.noSSR || routeOptions.ssr === false && !isIsland || (false);
-    if (noSSR) {
-      const siteConfig = Object.fromEntries(
-        Object.entries(useSiteConfig(event)).map(([k, v]) => [k, toValue(v)])
-      );
-      ctx.body.push(`<script>window.__NUXT_SITE_CONFIG__=${devalue(siteConfig)}<\/script>`);
-    }
-  });
-});
-
 const plugins = [
-  _bh4DP29JQlRVpq9jd_FDANSgq2mYCl7utA3cv_8IZ04
+  
 ];
 
-const _GFj7Ox = defineEventHandler(async (e) => {
-  if (e.context.siteConfig)
-    return;
-  const runtimeConfig = useRuntimeConfig(e);
-  const config = runtimeConfig["nuxt-site-config"];
-  const nitroApp = useNitroApp();
-  const siteConfig = createSiteConfigStack({
-    debug: config.debug
-  });
-  const appConfig = useAppConfig(e);
-  const nitroOrigin = useNitroOrigin(e);
-  e.context.siteConfigNitroOrigin = nitroOrigin;
-  {
-    siteConfig.push({
-      _context: "nitro:init",
-      _priority: -4,
-      url: nitroOrigin
-    });
-  }
-  siteConfig.push({
-    _context: "runtimeEnv",
-    _priority: 0,
-    ...runtimeConfig.site || {},
-    ...runtimeConfig.public.site || {},
-    // @ts-expect-error untyped
-    ...envSiteConfig(globalThis._importMeta_.env)
-    // just in-case, shouldn't be needed
-  });
-  const buildStack = config.stack || [];
-  buildStack.forEach((c) => siteConfig.push(c));
-  if (appConfig.site) {
-    siteConfig.push({
-      _priority: -2,
-      _context: "app:config",
-      ...appConfig.site
-    });
-  }
-  if (e.context._nitro.routeRules.site) {
-    siteConfig.push({
-      _context: "route-rules",
-      ...e.context._nitro.routeRules.site
-    });
-  }
-  const ctx = { siteConfig, event: e };
-  await nitroApp.hooks.callHook("site-config:init", ctx);
-  e.context.siteConfig = ctx.siteConfig;
-});
+const _SxA8c9 = defineEventHandler(() => {});
 
-const merger = createDefu((obj, key, value) => {
-  if (Array.isArray(obj[key]) && Array.isArray(value))
-    obj[key] = Array.from(/* @__PURE__ */ new Set([...obj[key], ...value]));
-  return obj[key];
-});
-function mergeOnKey(arr, key) {
-  const res = {};
-  arr.forEach((item) => {
-    const k = item[key];
-    res[k] = merger(item, res[k] || {});
-  });
-  return Object.values(res);
-}
-function splitForLocales(path, locales) {
-  const prefix = withLeadingSlash(path).split("/")[1];
-  if (locales.includes(prefix))
-    return [prefix, path.replace(`/${prefix}`, "")];
-  return [null, path];
-}
-const StringifiedRegExpPattern = /\/(.*?)\/([gimsuy]*)$/;
-function normalizeRuntimeFilters(input) {
-  return (input || []).map((rule) => {
-    if (rule instanceof RegExp || typeof rule === "string")
-      return rule;
-    const match = rule.regex.match(StringifiedRegExpPattern);
-    if (match)
-      return new RegExp(match[1], match[2]);
-    return false;
-  }).filter(Boolean);
-}
-function createPathFilter(options = {}) {
-  const urlFilter = createFilter(options);
-  return (loc) => {
-    let path = loc;
-    try {
-      path = parseURL(loc).pathname;
-    } catch {
-      return false;
-    }
-    return urlFilter(path);
-  };
-}
-function createFilter(options = {}) {
-  const include = options.include || [];
-  const exclude = options.exclude || [];
-  if (include.length === 0 && exclude.length === 0)
-    return () => true;
-  return function(path) {
-    for (const v of [{ rules: exclude, result: false }, { rules: include, result: true }]) {
-      const regexRules = v.rules.filter((r) => r instanceof RegExp);
-      if (regexRules.some((r) => r.test(path)))
-        return v.result;
-      const stringRules = v.rules.filter((r) => typeof r === "string");
-      if (stringRules.length > 0) {
-        const routes = {};
-        for (const r of stringRules) {
-          if (r === path)
-            return v.result;
-          routes[r] = true;
-        }
-        const routeRulesMatcher = toRouteMatcher(createRouter$1({ routes, strictTrailingSlash: false }));
-        if (routeRulesMatcher.matchAll(path).length > 0)
-          return Boolean(v.result);
-      }
-    }
-    return include.length === 0;
-  };
-}
-
-function useSimpleSitemapRuntimeConfig(e) {
-  const clone = JSON.parse(JSON.stringify(useRuntimeConfig(e).sitemap));
-  for (const k in clone.sitemaps) {
-    const sitemap = clone.sitemaps[k];
-    sitemap.include = normalizeRuntimeFilters(sitemap.include);
-    sitemap.exclude = normalizeRuntimeFilters(sitemap.exclude);
-    clone.sitemaps[k] = sitemap;
-  }
-  return Object.freeze(clone);
-}
-
-const _6d5ohi = defineEventHandler(async (e) => {
-  const fixPath = createSitePathResolver(e, { absolute: false, withBase: true });
-  const { sitemapName: fallbackSitemapName, cacheMaxAgeSeconds, version, xslColumns, xslTips } = useSimpleSitemapRuntimeConfig();
-  setHeader(e, "Content-Type", "application/xslt+xml");
-  if (cacheMaxAgeSeconds)
-    setHeader(e, "Cache-Control", `public, max-age=${cacheMaxAgeSeconds}, must-revalidate`);
-  else
-    setHeader(e, "Cache-Control", `no-cache, no-store`);
-  const { name: siteName, url: siteUrl } = useSiteConfig(e);
-  const referrer = getHeader(e, "Referer") || "/";
-  const isNotIndexButHasIndex = referrer !== fixPath("/sitemap.xml") && parseURL(referrer).pathname.endsWith("-sitemap.xml");
-  const sitemapName = parseURL(referrer).pathname.split("/").pop()?.split("-sitemap")[0] || fallbackSitemapName;
-  const title = `${siteName}${sitemapName !== "sitemap.xml" ? ` - ${sitemapName === "sitemap_index.xml" ? "index" : sitemapName}` : ""}`.replace(/&/g, "&amp;");
-  const canonicalQuery = getQuery$1(referrer).canonical;
-  const isShowingCanonical = typeof canonicalQuery !== "undefined" && canonicalQuery !== "false";
-  const conditionalTips = [
-    'You are looking at a <a href="https://developer.mozilla.org/en-US/docs/Web/XSLT/Transforming_XML_with_XSLT/An_Overview" style="color: #398465" target="_blank">XML stylesheet</a>. Read the <a href="https://nuxtseo.com/sitemap/guides/customising-ui" style="color: #398465" target="_blank">docs</a> to learn how to customize it. View the page source to see the raw XML.',
-    `URLs missing? Check Nuxt Devtools Sitemap tab (or the <a href="${withQuery("/__sitemap__/debug.json", { sitemap: sitemapName })}" style="color: #398465" target="_blank">debug endpoint</a>).`
-  ];
-  if (!isShowingCanonical) {
-    const canonicalPreviewUrl = withQuery(referrer, { canonical: "" });
-    conditionalTips.push(`Your canonical site URL is <strong>${siteUrl}</strong>.`);
-    conditionalTips.push(`You can preview your canonical sitemap by visiting <a href="${canonicalPreviewUrl}" style="color: #398465; white-space: nowrap;">${fixPath(canonicalPreviewUrl)}?canonical</a>`);
-  } else {
-    conditionalTips.push(`You are viewing the canonical sitemap. You can switch to using the request origin: <a href="${fixPath(referrer)}" style="color: #398465; white-space: nowrap ">${fixPath(referrer)}</a>`);
-  }
-  let columns = [...xslColumns];
-  if (!columns.length) {
-    columns = [
-      { label: "URL", width: "50%" },
-      { label: "Images", width: "25%", select: "count(image:image)" },
-      { label: "Last Updated", width: "25%", select: "concat(substring(sitemap:lastmod,0,11),concat(' ', substring(sitemap:lastmod,12,5)),concat(' ', substring(sitemap:lastmod,20,6)))" }
-    ];
-  }
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="2.0"
-                xmlns:html="http://www.w3.org/TR/REC-html40"
-                xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
-                xmlns:sitemap="http://www.sitemaps.org/schemas/sitemap/0.9"
-                xmlns:xhtml="http://www.w3.org/1999/xhtml"
-                xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
-                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-  <xsl:output method="html" version="1.0" encoding="UTF-8" indent="yes"/>
-  <xsl:template match="/">
-    <html xmlns="http://www.w3.org/1999/xhtml">
-      <head>
-        <title>XML Sitemap</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-        <style type="text/css">
-          body {
-            font-family: Inter, Helvetica, Arial, sans-serif;
-            font-size: 14px;
-            color: #333;
-          }
-
-          table {
-            border: none;
-            border-collapse: collapse;
-          }
-
-          .bg-yellow-200 {
-            background-color: #fef9c3;
-          }
-
-          .p-5 {
-            padding: 1.25rem;
-          }
-
-          .rounded {
-            border-radius: 4px;
-            }
-
-          .shadow {
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-          }
-
-          #sitemap tr:nth-child(odd) td {
-            background-color: #f8f8f8 !important;
-          }
-
-          #sitemap tbody tr:hover td {
-            background-color: #fff;
-          }
-
-          #sitemap tbody tr:hover td, #sitemap tbody tr:hover td a {
-            color: #000;
-          }
-
-          .expl a {
-            color: #398465
-            font-weight: 600;
-          }
-
-          .expl a:visited {
-            color: #398465
-          }
-
-          a {
-            color: #000;
-            text-decoration: none;
-          }
-
-          a:visited {
-            color: #777;
-          }
-
-          a:hover {
-            text-decoration: underline;
-          }
-
-          td {
-            font-size: 12px;
-          }
-
-          .text-2xl {
-            font-size: 2rem;
-            font-weight: 600;
-            line-height: 1.25;
-          }
-
-          th {
-            text-align: left;
-            padding-right: 30px;
-            font-size: 12px;
-          }
-
-          thead th {
-            border-bottom: 1px solid #000;
-          }
-          .fixed { position: fixed; }
-          .right-2 { right: 2rem; }
-          .top-2 { top: 2rem; }
-          .w-30 { width: 30rem; }
-          p { margin: 0; }
-          li { padding-bottom: 0.5rem; line-height: 1.5; }
-          h1 { margin: 0; }
-          .mb-5 { margin-bottom: 1.25rem; }
-          .mb-3 { margin-bottom: 0.75rem; }
-        </style>
-      </head>
-      <body>
-        <div style="grid-template-columns: 1fr 1fr; display: grid; margin: 3rem;">
-            <div>
-             <div id="content">
-          <h1 class="text-2xl mb-3">XML Sitemap</h1>
-          <h2>${title}</h2>
-          ${isNotIndexButHasIndex ? `<p style="font-size: 12px; margin-bottom: 1rem;"><a href="${fixPath("/sitemap_index.xml")}">${fixPath("/sitemap_index.xml")}</a></p>` : ""}
-          <xsl:if test="count(sitemap:sitemapindex/sitemap:sitemap) &gt; 0">
-            <p class="expl" style="margin-bottom: 1rem;">
-              This XML Sitemap Index file contains
-              <xsl:value-of select="count(sitemap:sitemapindex/sitemap:sitemap)"/> sitemaps.
-            </p>
-            <table id="sitemap" cellpadding="3">
-              <thead>
-                <tr>
-                  <th width="75%">Sitemap</th>
-                  <th width="25%">Last Modified</th>
-                </tr>
-              </thead>
-              <tbody>
-                <xsl:for-each select="sitemap:sitemapindex/sitemap:sitemap">
-                  <xsl:variable name="sitemapURL">
-                    <xsl:value-of select="sitemap:loc"/>
-                  </xsl:variable>
-                  <tr>
-                    <td>
-                      <a href="{$sitemapURL}">
-                        <xsl:value-of select="sitemap:loc"/>
-                      </a>
-                    </td>
-                    <td>
-                      <xsl:value-of
-                        select="concat(substring(sitemap:lastmod,0,11),concat(' ', substring(sitemap:lastmod,12,5)),concat(' ', substring(sitemap:lastmod,20,6)))"/>
-                    </td>
-                  </tr>
-                </xsl:for-each>
-              </tbody>
-            </table>
-          </xsl:if>
-          <xsl:if test="count(sitemap:sitemapindex/sitemap:sitemap) &lt; 1">
-            <p class="expl" style="margin-bottom: 1rem;">
-              This XML Sitemap contains
-              <xsl:value-of select="count(sitemap:urlset/sitemap:url)"/> URLs.
-            </p>
-            <table id="sitemap" cellpadding="3">
-              <thead>
-                <tr>
-                  ${columns.map((c) => `<th width="${c.width}">${c.label}</th>`).join("\n")}
-                </tr>
-              </thead>
-              <tbody>
-                <xsl:variable name="lower" select="'abcdefghijklmnopqrstuvwxyz'"/>
-                <xsl:variable name="upper" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
-                <xsl:for-each select="sitemap:urlset/sitemap:url">
-                  <tr>
-                    <td>
-                      <xsl:variable name="itemURL">
-                        <xsl:value-of select="sitemap:loc"/>
-                      </xsl:variable>
-                      <a href="{$itemURL}">
-                        <xsl:value-of select="sitemap:loc"/>
-                      </a>
-                    </td>
-                    ${columns.filter((c) => c.label !== "URL").map((c) => `<td>
-<xsl:value-of select="${c.select}"/>
-</td>`).join("\n")}
-                  </tr>
-                </xsl:for-each>
-              </tbody>
-            </table>
-          </xsl:if>
-        </div>
-        </div>
-                    ${""}
-        </div>
-      </body>
-    </html>
-  </xsl:template>
-</xsl:stylesheet>
-`;
-});
-
-function resolve(s, resolvers) {
-  if (typeof s === "undefined")
-    return s;
-  s = typeof s === "string" ? s : s.toString();
-  if (hasProtocol(s, { acceptRelative: true, strict: false }))
-    return resolvers.fixSlashes(s);
-  return resolvers.canonicalUrlResolver(s);
-}
-function normaliseSitemapUrls(data, resolvers) {
-  const entries = data.map((e) => typeof e === "string" ? { loc: e } : e).map((e) => {
-    e = { ...e };
-    if (e.url) {
-      e.loc = e.url;
-      delete e.url;
-    }
-    e.loc = fixSlashes(false, e.loc);
-    return e;
-  }).filter(Boolean);
-  function normaliseEntry(e) {
-    if (e.lastmod) {
-      const date = normaliseDate(e.lastmod);
-      if (date)
-        e.lastmod = date;
-      else
-        delete e.lastmod;
-    }
-    if (!e.lastmod)
-      delete e.lastmod;
-    e.loc = resolve(e.loc, resolvers);
-    if (e.alternatives) {
-      e.alternatives = mergeOnKey(e.alternatives.map((e2) => {
-        const a = { ...e2 };
-        if (typeof a.href === "string")
-          a.href = resolve(a.href, resolvers);
-        else if (typeof a.href === "object" && a.href)
-          a.href = resolve(a.href.href, resolvers);
-        return a;
-      }), "hreflang");
-    }
-    if (e.images) {
-      e.images = mergeOnKey(e.images.map((i) => {
-        i = { ...i };
-        i.loc = resolve(i.loc, resolvers);
-        return i;
-      }), "loc");
-    }
-    if (e.videos) {
-      e.videos = e.videos.map((v) => {
-        v = { ...v };
-        if (v.content_loc)
-          v.content_loc = resolve(v.content_loc, resolvers);
-        return v;
-      });
-    }
-    return e;
-  }
-  return mergeOnKey(
-    entries.map(normaliseEntry).map((e) => ({ ...e, _key: `${e._sitemap || ""}${e.loc}` })),
-    "_key"
-  );
-}
-const IS_VALID_W3C_DATE = [
-  /(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))/,
-  /^\d{4}-[01]\d-[0-3]\d$/,
-  /^\d{4}-[01]\d$/,
-  /^\d{4}$/
-];
-function isValidW3CDate(d) {
-  return IS_VALID_W3C_DATE.some((r) => r.test(d));
-}
-function normaliseDate(d) {
-  if (typeof d === "string") {
-    if (d.includes("T")) {
-      const t = d.split("T")[1];
-      if (!t.includes("+") && !t.includes("-") && !t.includes("Z")) {
-        d += "Z";
-      }
-    }
-    if (!isValidW3CDate(d))
-      return false;
-    d = new Date(d);
-    d.setMilliseconds(0);
-    if (Number.isNaN(d.getTime()))
-      return false;
-  }
-  const z = (n) => `0${n}`.slice(-2);
-  const date = `${d.getUTCFullYear()}-${z(d.getUTCMonth() + 1)}-${z(d.getUTCDate())}`;
-  if (d.getUTCHours() > 0 || d.getUTCMinutes() > 0 || d.getUTCSeconds() > 0) {
-    return `${date}T${z(d.getUTCHours())}:${z(d.getUTCMinutes())}:${z(d.getUTCSeconds())}Z`;
-  }
-  return date;
-}
-
-async function fetchDataSource(input, event) {
-  const context = typeof input.context === "string" ? { name: input.context } : input.context || { name: "fetch" };
-  context.tips = context.tips || [];
-  const url = typeof input.fetch === "string" ? input.fetch : input.fetch[0];
-  const options = typeof input.fetch === "string" ? {} : input.fetch[1];
-  const start = Date.now();
-  const timeout = options.timeout || 5e3;
-  const timeoutController = new AbortController();
-  const abortRequestTimeout = setTimeout(() => timeoutController.abort(), timeout);
-  let isHtmlResponse = false;
-  try {
-    const urls = await globalThis.$fetch(url, {
-      ...options,
-      responseType: "json",
-      signal: timeoutController.signal,
-      headers: defu(options?.headers, {
-        Accept: "application/json"
-      }, event ? { Host: getRequestHost(event, { xForwardedHost: true }) } : {}),
-      // @ts-expect-error untyped
-      onResponse({ response }) {
-        if (typeof response._data === "string" && response._data.startsWith("<!DOCTYPE html>"))
-          isHtmlResponse = true;
-      }
-    });
-    const timeTakenMs = Date.now() - start;
-    if (isHtmlResponse) {
-      context.tips.push("This is usually because the URL isn't correct or is throwing an error. Please check the URL");
-      return {
-        ...input,
-        context,
-        urls: [],
-        timeTakenMs,
-        error: "Received HTML response instead of JSON"
-      };
-    }
-    return {
-      ...input,
-      context,
-      timeTakenMs,
-      urls
-    };
-  } catch (_err) {
-    const error = _err;
-    if (error.message.includes("This operation was aborted"))
-      context.tips.push("The request has taken too long. Make sure app sources respond within 5 seconds or adjust the timeout fetch option.");
-    else
-      context.tips.push(`Response returned a status of ${error.response?.status || "unknown"}.`);
-    console.error("[@nuxtjs/sitemap] Failed to fetch source.", { url, error });
-    return {
-      ...input,
-      context,
-      urls: [],
-      error: error.message
-    };
-  } finally {
-    abortRequestTimeout && clearTimeout(abortRequestTimeout);
-  }
-}
-function globalSitemapSources() {
-  return import('../virtual/global-sources.mjs').then((m) => m.sources);
-}
-function childSitemapSources(definition) {
-  return definition?._hasSourceChunk ? import('../virtual/child-sources.mjs').then((m) => m.sources[definition.sitemapName] || []) : Promise.resolve([]);
-}
-async function resolveSitemapSources(sources, event) {
-  return (await Promise.all(
-    sources.map((source) => {
-      if (typeof source === "object" && "urls" in source) {
-        return {
-          timeTakenMs: 0,
-          ...source,
-          urls: source.urls
-        };
-      }
-      if (source.fetch)
-        return fetchDataSource(source, event);
-      return {
-        ...source,
-        error: "Invalid source"
-      };
-    })
-  )).flat();
-}
-
-function filterSitemapUrls(_urls, options) {
-  const urlFilter = createFilter({
-    include: options.include,
-    exclude: options.exclude
-  });
-  return _urls.filter((e) => {
-    let path = e.loc;
-    try {
-      path = parseURL(e.loc).pathname;
-    } catch {
-      return false;
-    }
-    if (!urlFilter(path))
-      return false;
-    if (options.isMultiSitemap && e._sitemap && options.sitemapName)
-      return e._sitemap === options.sitemapName;
-    return true;
-  });
-}
-
-function normaliseI18nSources(sources, { autoI18n, isI18nMapped, include, exclude }) {
-  const filterPath = createPathFilter({
-    include,
-    exclude
-  });
-  if (autoI18n && isI18nMapped) {
-    return sources.map((s) => {
-      const urls = (s.urls || []).map((_url) => {
-        const url = typeof _url === "string" ? { loc: _url } : _url;
-        url.loc = url.loc || url.url;
-        if (!hasProtocol(url.loc, { acceptRelative: true }))
-          url.loc = withLeadingSlash(url.loc);
-        return url;
-      });
-      s.urls = urls.map((url) => {
-        if (url._sitemap || url._i18nTransform)
-          return url;
-        if (url.loc && !hasProtocol(url.loc, { acceptRelative: true })) {
-          const match = splitForLocales(url.loc, autoI18n.locales.map((l) => l.code));
-          const localeCode = match[0] || autoI18n.defaultLocale;
-          const pathWithoutPrefix = match[1];
-          const locale = autoI18n.locales.find((e) => e.code === localeCode);
-          if (locale) {
-            if (!url.alternatives) {
-              const alternatives = urls.map((u) => {
-                if (u._sitemap || u._i18nTransform)
-                  return false;
-                if (u?.loc) {
-                  if (!filterPath(u.loc))
-                    return false;
-                  const [_localeCode, _pathWithoutPrefix] = splitForLocales(u.loc, autoI18n.locales.map((l) => l.code));
-                  if (pathWithoutPrefix === _pathWithoutPrefix) {
-                    const entries = [];
-                    if (_localeCode === autoI18n.defaultLocale) {
-                      entries.push({
-                        href: u.loc,
-                        hreflang: "x-default"
-                      });
-                    }
-                    entries.push({
-                      href: u.loc,
-                      hreflang: _localeCode || autoI18n.defaultLocale
-                    });
-                    return entries;
-                  }
-                }
-                return false;
-              }).flat().filter(Boolean);
-              if (alternatives.length)
-                url.alternatives = alternatives;
-            }
-            return {
-              _sitemap: locale.iso || locale.code,
-              ...url
-            };
-          }
-        }
-        return url;
-      });
-      return s;
-    });
-  }
-  return sources;
-}
-function applyI18nEnhancements(_urls, options) {
-  const { autoI18n, include, exclude } = options;
-  const filterPath = createPathFilter({
-    include,
-    exclude
-  });
-  return _urls.map((e) => {
-    if (!e._i18nTransform)
-      return e;
-    delete e._i18nTransform;
-    const parsedURL = parseURL(e.loc);
-    const path = withLeadingSlash(parsedURL.pathname + parsedURL.search + parsedURL.hash);
-    const match = splitForLocales(path, autoI18n.locales.map((l) => l.code));
-    let pathWithoutLocale = path;
-    if (match[0]) {
-      pathWithoutLocale = match[1] || "/";
-      match[0];
-    }
-    if (autoI18n.differentDomains) {
-      return {
-        // will force it to pass filter
-        _sitemap: options.sitemapName,
-        ...e,
-        alternatives: [
-          {
-            // apply default locale domain
-            ...autoI18n.locales.find((l) => [l.code, l.iso].includes(autoI18n.defaultLocale)),
-            code: "x-default"
-          },
-          ...autoI18n.locales.filter((l) => !!l.domain)
-        ].map((locale2) => {
-          return {
-            hreflang: locale2.iso || locale2.code,
-            href: joinURL(withHttps(locale2.domain), pathWithoutLocale)
-          };
-        })
-      };
-    }
-    return autoI18n.locales.map((l) => {
-      let loc = joinURL(`/${l.code}`, pathWithoutLocale);
-      if (autoI18n.differentDomains || ["prefix_and_default", "prefix_except_default"].includes(autoI18n.strategy) && l.code === autoI18n.defaultLocale)
-        loc = pathWithoutLocale;
-      return {
-        _sitemap: options.isI18nMapped ? l.iso || l.code : void 0,
-        ...e,
-        loc,
-        alternatives: [{ code: "x-default" }, ...autoI18n.locales].map((locale2) => {
-          const code = locale2.code === "x-default" ? autoI18n.defaultLocale : locale2.code;
-          const isDefault = locale2.code === "x-default" || locale2.code === autoI18n.defaultLocale;
-          let href = "";
-          if (autoI18n.strategy === "prefix") {
-            href = joinURL("/", code, pathWithoutLocale);
-          } else if (["prefix_and_default", "prefix_except_default"].includes(autoI18n.strategy)) {
-            if (isDefault) {
-              href = pathWithoutLocale;
-            } else {
-              href = joinURL("/", code, pathWithoutLocale);
-            }
-          }
-          const hreflang = locale2.iso || locale2.code;
-          if (!filterPath(href))
-            return false;
-          return {
-            hreflang,
-            href
-          };
-        }).filter(Boolean)
-      };
-    });
-  }).flat();
-}
-
-function sortSitemapUrls(urls) {
-  return urls.sort(
-    (a, b) => {
-      const aLoc = typeof a === "string" ? a : a.loc;
-      const bLoc = typeof b === "string" ? b : b.loc;
-      return aLoc.localeCompare(bLoc, void 0, { numeric: true });
-    }
-  ).sort((a, b) => {
-    const aLoc = (typeof a === "string" ? a : a.loc) || "";
-    const bLoc = (typeof b === "string" ? b : b.loc) || "";
-    const aSegments = aLoc.split("/").length;
-    const bSegments = bLoc.split("/").length;
-    if (aSegments > bSegments)
-      return 1;
-    if (aSegments < bSegments)
-      return -1;
-    return 0;
-  });
-}
-
-function withoutQuery(path) {
-  return path.split("?")[0];
-}
-function createNitroRouteRuleMatcher() {
-  const { nitro, app } = useRuntimeConfig();
-  const _routeRulesMatcher = toRouteMatcher(
-    createRouter$1({
-      routes: Object.fromEntries(
-        Object.entries(nitro?.routeRules || {}).map(([path, rules]) => [withoutTrailingSlash(path), rules])
-      )
-    })
-  );
-  return (path) => {
-    return defu({}, ..._routeRulesMatcher.matchAll(
-      // radix3 does not support trailing slashes
-      withoutBase(withoutTrailingSlash(withoutQuery(path)), app.baseURL)
-    ).reverse());
-  };
-}
-
-function resolveKey(k) {
-  switch (k) {
-    case "images":
-      return "image";
-    case "videos":
-      return "video";
-    case "news":
-      return "news";
-    default:
-      return k;
-  }
-}
-function handleObject(key, obj) {
-  return [
-    `        <${key}:${key}>`,
-    ...Object.entries(obj).map(([sk, sv]) => {
-      if (key === "video" && Array.isArray(sv)) {
-        return sv.map((v) => {
-          if (typeof v === "string") {
-            return [
-              `            `,
-              `<${key}:${sk}>`,
-              escapeValueForXml(v),
-              `</${key}:${sk}>`
-            ].join("");
-          }
-          const attributes = Object.entries(v).filter(([ssk]) => ssk !== sk).map(([ssk, ssv]) => `${ssk}="${escapeValueForXml(ssv)}"`).join(" ");
-          return [
-            `            <${key}:${sk} ${attributes}>`,
-            // value is the same sk
-            v[sk],
-            `</${key}:${sk}>`
-          ].join("");
-        }).join("\n");
-      }
-      if (typeof sv === "object") {
-        if (key === "video") {
-          const attributes = Object.entries(sv).filter(([ssk]) => ssk !== sk).map(([ssk, ssv]) => `${ssk}="${escapeValueForXml(ssv)}"`).join(" ");
-          return [
-            `            <${key}:${sk} ${attributes}>`,
-            // value is the same sk
-            sv[sk],
-            `</${key}:${sk}>`
-          ].join("");
-        }
-        return [
-          `            <${key}:${sk}>`,
-          ...Object.entries(sv).map(([ssk, ssv]) => `                <${key}:${ssk}>${escapeValueForXml(ssv)}</${key}:${ssk}>`),
-          `            </${key}:${sk}>`
-        ].join("\n");
-      }
-      return `            <${key}:${sk}>${escapeValueForXml(sv)}</${key}:${sk}>`;
-    }),
-    `        </${key}:${key}>`
-  ].join("\n");
-}
-function handleArray(key, arr) {
-  if (arr.length === 0)
-    return false;
-  key = resolveKey(key);
-  if (key === "alternatives") {
-    return arr.map((obj) => [
-      `        <xhtml:link rel="alternate" ${Object.entries(obj).map(([sk, sv]) => `${sk}="${escapeValueForXml(sv)}"`).join(" ")} />`
-    ].join("\n")).join("\n");
-  }
-  return arr.map((obj) => handleObject(key, obj)).join("\n");
-}
-function handleEntry(k, e) {
-  return Array.isArray(e[k]) ? handleArray(k, e[k]) : typeof e[k] === "object" ? handleObject(k, e[k]) : `        <${k}>${escapeValueForXml(e[k])}</${k}>`;
-}
-function wrapSitemapXml(input, resolvers, options) {
-  const xsl = options.xsl ? resolvers.relativeBaseUrlResolver(options.xsl) : false;
-  const credits = options.credits;
-  input.unshift(`<?xml version="1.0" encoding="UTF-8"?>${xsl ? `<?xml-stylesheet type="text/xsl" href="${xsl}"?>` : ""}`);
-  if (credits)
-    input.push(`<!-- XML Sitemap generated by @nuxtjs/sitemap v${options.version} at ${(/* @__PURE__ */ new Date()).toISOString()} -->`);
-  return input.join("\n");
-}
-function escapeValueForXml(value) {
-  if (value === true || value === false)
-    return value ? "yes" : "no";
-  return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
-}
-
-async function buildSitemap(sitemap, resolvers, runtimeConfig) {
-  const {
-    sitemaps,
-    // enhancing
-    autoI18n,
-    isI18nMapped,
-    isMultiSitemap,
-    // sorting
-    sortEntries,
-    // chunking
-    defaultSitemapsChunkSize,
-    // xls
-    version,
-    xsl,
-    credits
-  } = runtimeConfig;
-  const isChunking = typeof sitemaps.chunks !== "undefined" && !Number.isNaN(Number(sitemap.sitemapName));
-  function maybeSort(urls2) {
-    return sortEntries ? sortSitemapUrls(urls2) : urls2;
-  }
-  function maybeSlice(urls2) {
-    if (isChunking && defaultSitemapsChunkSize) {
-      const chunk = Number(sitemap.sitemapName);
-      return urls2.slice(chunk * defaultSitemapsChunkSize, (chunk + 1) * defaultSitemapsChunkSize);
-    }
-    return urls2;
-  }
-  if (autoI18n?.differentDomains) {
-    const domain = autoI18n.locales.find((e) => [e.iso, e.code].includes(sitemap.sitemapName))?.domain;
-    if (domain) {
-      const _tester = resolvers.canonicalUrlResolver;
-      resolvers.canonicalUrlResolver = (path) => resolveSitePath(path, {
-        absolute: true,
-        withBase: false,
-        siteUrl: withHttps(domain),
-        trailingSlash: !_tester("/test/").endsWith("/"),
-        base: "/"
-      });
-    }
-  }
-  const sources = sitemap.includeAppSources ? await globalSitemapSources() : [];
-  sources.push(...await childSitemapSources(sitemap));
-  let resolvedSources = await resolveSitemapSources(sources, resolvers.event);
-  if (autoI18n)
-    resolvedSources = normaliseI18nSources(resolvedSources, { autoI18n, isI18nMapped, ...sitemap });
-  const normalisedUrls = normaliseSitemapUrls(resolvedSources.map((e) => e.urls).flat(), resolvers);
-  const routeRuleMatcher = createNitroRouteRuleMatcher();
-  let enhancedUrls = normalisedUrls.map((e) => defu(e, sitemap.defaults)).map((e) => {
-    const path = parseURL(e.loc).pathname;
-    let routeRules = routeRuleMatcher(path);
-    if (autoI18n?.locales && autoI18n?.strategy !== "no_prefix") {
-      const match = splitForLocales(path, autoI18n.locales.map((l) => l.code));
-      const pathWithoutPrefix = match[1];
-      if (pathWithoutPrefix && pathWithoutPrefix !== path)
-        routeRules = defu(routeRules, routeRuleMatcher(pathWithoutPrefix));
-    }
-    if (routeRules.sitemap === false)
-      return false;
-    if (typeof routeRules.index !== "undefined" && !routeRules.index)
-      return false;
-    const hasRobotsDisabled = Object.entries(routeRules.headers || {}).some(([name, value]) => name.toLowerCase() === "x-robots-tag" && value.toLowerCase() === "noindex");
-    if (routeRules.redirect || hasRobotsDisabled)
-      return false;
-    return routeRules.sitemap ? defu(e, routeRules.sitemap) : e;
-  }).filter(Boolean);
-  if (autoI18n?.locales)
-    enhancedUrls = applyI18nEnhancements(enhancedUrls, { isI18nMapped, autoI18n, ...sitemap });
-  const filteredUrls = filterSitemapUrls(enhancedUrls, { event: resolvers.event, isMultiSitemap, ...sitemap });
-  const sortedUrls = maybeSort(filteredUrls);
-  const slicedUrls = maybeSlice(sortedUrls);
-  const nitro = useNitroApp();
-  const ctx = {
-    urls: slicedUrls,
-    sitemapName: sitemap.sitemapName
-  };
-  await nitro.hooks.callHook("sitemap:resolved", ctx);
-  const urls = maybeSort(normaliseSitemapUrls(ctx.urls, resolvers));
-  const urlset = urls.map((e) => {
-    const keys = Object.keys(e).filter((k) => !k.startsWith("_"));
-    return [
-      "    <url>",
-      keys.map((k) => handleEntry(k, e)).filter(Boolean).join("\n"),
-      "    </url>"
-    ].join("\n");
-  });
-  return wrapSitemapXml([
-    '<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd http://www.google.com/schemas/sitemap-image/1.1 http://www.google.com/schemas/sitemap-image/1.1/sitemap-image.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-    urlset.join("\n"),
-    "</urlset>"
-  ], resolvers, { version, xsl, credits });
-}
-
-async function buildSitemapIndex(resolvers, runtimeConfig) {
-  const {
-    sitemaps,
-    // enhancing
-    autoLastmod,
-    // chunking
-    defaultSitemapsChunkSize,
-    autoI18n,
-    isI18nMapped,
-    sortEntries,
-    // xls
-    version,
-    xsl,
-    credits
-  } = runtimeConfig;
-  if (!sitemaps)
-    throw new Error("Attempting to build a sitemap index without required `sitemaps` configuration.");
-  function maybeSort(urls) {
-    return sortEntries ? sortSitemapUrls(urls) : urls;
-  }
-  const isChunking = typeof sitemaps.chunks !== "undefined";
-  const chunks = {};
-  if (isChunking) {
-    const sitemap = sitemaps.chunks;
-    const sources = await resolveSitemapSources(await globalSitemapSources());
-    const normalisedUrls = normaliseSitemapUrls(sources.map((e) => e.urls).flat(), resolvers);
-    let enhancedUrls = normalisedUrls.map((e) => defu(e, sitemap.defaults));
-    if (autoI18n?.locales)
-      enhancedUrls = applyI18nEnhancements(enhancedUrls, { isI18nMapped, autoI18n, sitemapName: sitemap.sitemapName });
-    const filteredUrls = filterSitemapUrls(enhancedUrls, { ...sitemap, isMultiSitemap: true });
-    const sortedUrls = maybeSort(filteredUrls);
-    sortedUrls.forEach((url, i) => {
-      const chunkIndex = Math.floor(i / defaultSitemapsChunkSize);
-      chunks[chunkIndex] = chunks[chunkIndex] || { urls: [] };
-      chunks[chunkIndex].urls.push(url);
-    });
-  } else {
-    for (const sitemap in sitemaps) {
-      if (sitemap !== "index") {
-        chunks[sitemap] = chunks[sitemap] || { urls: [] };
-      }
-    }
-  }
-  const entries = [];
-  for (const name in chunks) {
-    const sitemap = chunks[name];
-    const entry = {
-      sitemap: resolvers.canonicalUrlResolver(`${name}-sitemap.xml`)
-    };
-    let lastmod = sitemap.urls.filter((a) => !!a?.lastmod).map((a) => typeof a.lastmod === "string" ? new Date(a.lastmod) : a.lastmod).sort((a, b) => (b?.getTime() || 0) - (a?.getTime() || 0))?.[0];
-    if (!lastmod && autoLastmod)
-      lastmod = /* @__PURE__ */ new Date();
-    if (lastmod)
-      entry.lastmod = normaliseDate(lastmod);
-    entries.push(entry);
-  }
-  if (sitemaps.index) {
-    entries.push(...sitemaps.index.sitemaps.map((entry) => {
-      return typeof entry === "string" ? { sitemap: entry } : entry;
-    }));
-  }
-  const ctx = { sitemaps: entries };
-  const nitro = useNitroApp();
-  await nitro.hooks.callHook("sitemap:index-resolved", ctx);
-  const sitemapXml = ctx.sitemaps.map((e) => [
-    "    <sitemap>",
-    `        <loc>${escapeValueForXml(e.sitemap)}</loc>`,
-    // lastmod is optional
-    e.lastmod ? `        <lastmod>${escapeValueForXml(e.lastmod)}</lastmod>` : false,
-    "    </sitemap>"
-  ].filter(Boolean).join("\n")).join("\n");
-  return wrapSitemapXml([
-    '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-    sitemapXml,
-    "</sitemapindex>"
-  ], resolvers, { version, xsl, credits });
-}
-
-function useNitroUrlResolvers(e) {
-  const canonicalQuery = getQuery(e).canonical;
-  const isShowingCanonical = typeof canonicalQuery !== "undefined" && canonicalQuery !== "false";
-  const siteConfig = useSiteConfig(e);
-  return {
-    event: e,
-    fixSlashes: (path) => fixSlashes(siteConfig.trailingSlash, path),
-    // we need these as they depend on the nitro event
-    canonicalUrlResolver: createSitePathResolver(e, {
-      canonical: isShowingCanonical || true,
-      absolute: true,
-      withBase: true
-    }),
-    relativeBaseUrlResolver: createSitePathResolver(e, { absolute: false, withBase: true })
-  };
-}
-async function createSitemap(e, definition, runtimeConfig) {
-  const { sitemapName } = definition;
-  const nitro = useNitroApp();
-  let sitemap = await (definition.sitemapName === "index" ? buildSitemapIndex(useNitroUrlResolvers(e), runtimeConfig) : buildSitemap(definition, useNitroUrlResolvers(e), runtimeConfig));
-  const ctx = { sitemap, sitemapName };
-  await nitro.hooks.callHook("sitemap:output", ctx);
-  sitemap = ctx.sitemap;
-  setHeader(e, "Content-Type", "text/xml; charset=UTF-8");
-  if (runtimeConfig.cacheMaxAgeSeconds)
-    setHeader(e, "Cache-Control", `public, max-age=${runtimeConfig.cacheMaxAgeSeconds}, must-revalidate`);
-  else
-    setHeader(e, "Cache-Control", `no-cache, no-store`);
-  e.context._isSitemap = true;
-  return sitemap;
-}
-
-const _3nUlWM = defineEventHandler(async (e) => {
-  const runtimeConfig = useSimpleSitemapRuntimeConfig();
-  const { sitemaps } = runtimeConfig;
-  if ("index" in sitemaps) {
-    return sendRedirect(e, withBase("/sitemap_index.xml", useRuntimeConfig().app.baseURL), 301);
-  }
-  return createSitemap(e, Object.values(sitemaps)[0], runtimeConfig);
-});
-
-const _lazy_hpPv6s = () => import('../routes/renderer.mjs');
+const _lazy_BWcPPB = () => import('../routes/renderer.mjs').then(function (n) { return n.r; });
 
 const handlers = [
-  { route: '/__nuxt_error', handler: _lazy_hpPv6s, lazy: true, middleware: false, method: undefined },
-  { route: '', handler: _GFj7Ox, lazy: false, middleware: true, method: undefined },
-  { route: '/__sitemap__/style.xsl', handler: _6d5ohi, lazy: false, middleware: false, method: undefined },
-  { route: '/sitemap.xml', handler: _3nUlWM, lazy: false, middleware: false, method: undefined },
-  { route: '/**', handler: _lazy_hpPv6s, lazy: true, middleware: false, method: undefined }
+  { route: '/__nuxt_error', handler: _lazy_BWcPPB, lazy: true, middleware: false, method: undefined },
+  { route: '/__nuxt_island/**', handler: _SxA8c9, lazy: false, middleware: false, method: undefined },
+  { route: '/**', handler: _lazy_BWcPPB, lazy: true, middleware: false, method: undefined }
 ];
 
 function createNitroApp() {
@@ -6163,6 +4576,45 @@ function useNitroApp() {
 }
 runNitroPlugins(nitroApp$1);
 
+function defineRenderHandler(render) {
+  const runtimeConfig = useRuntimeConfig();
+  return eventHandler(async (event) => {
+    const nitroApp = useNitroApp();
+    const ctx = { event, render, response: void 0 };
+    await nitroApp.hooks.callHook("render:before", ctx);
+    if (!ctx.response) {
+      if (event.path === `${runtimeConfig.app.baseURL}favicon.ico`) {
+        setResponseHeader(event, "Content-Type", "image/x-icon");
+        return send(
+          event,
+          "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        );
+      }
+      ctx.response = await ctx.render(event);
+      if (!ctx.response) {
+        const _currentStatus = getResponseStatus(event);
+        setResponseStatus(event, _currentStatus === 200 ? 500 : _currentStatus);
+        return send(
+          event,
+          "No response returned from render handler: " + event.path
+        );
+      }
+    }
+    await nitroApp.hooks.callHook("render:response", ctx.response, ctx);
+    if (ctx.response.headers) {
+      setResponseHeaders(event, ctx.response.headers);
+    }
+    if (ctx.response.statusCode || ctx.response.statusMessage) {
+      setResponseStatus(
+        event,
+        ctx.response.statusCode,
+        ctx.response.statusMessage
+      );
+    }
+    return ctx.response.body;
+  });
+}
+
 const nitroApp = useNitroApp();
 const handler = toNodeListener(nitroApp.h3App);
 const listener = function(req, res) {
@@ -6176,5 +4628,5 @@ const listener = function(req, res) {
   return handler(req, res);
 };
 
-export { $fetch as $, listener as A, getRouteRules as a, buildAssetsURL as b, createError$1 as c, defineRenderHandler as d, useNitroApp as e, getResponseStatusText as f, getQuery as g, getResponseStatus as h, hasProtocol as i, isScriptProtocol as j, joinURL as k, getContext as l, baseURL as m, createHooks as n, isEqual as o, publicAssetsURL as p, stringifyParsedURL as q, stringifyQuery as r, sanitizeStatusCode as s, parseQuery as t, useRuntimeConfig as u, toRouteMatcher as v, withQuery as w, createRouter$1 as x, withTrailingSlash as y, withoutTrailingSlash as z };
+export { $fetch as $, getResponseStatus as a, getQuery as b, createError$1 as c, defineRenderHandler as d, getRouteRules as e, useNitroApp as f, getResponseStatusText as g, hasProtocol as h, joinURL as i, joinRelativeURL as j, withTrailingSlash as k, withoutTrailingSlash as l, isScriptProtocol as m, getContext as n, defu as o, parseQuery as p, createHooks as q, isEqual as r, sanitizeStatusCode as s, stringifyParsedURL as t, useRuntimeConfig as u, stringifyQuery as v, withQuery as w, toRouteMatcher as x, createRouter$1 as y, listener as z };
 //# sourceMappingURL=nitro.mjs.map
