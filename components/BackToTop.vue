@@ -14,8 +14,8 @@ const scrollToTop = () => {
     <button
       v-if="y > 400"
       @click="scrollToTop"
-      class="fixed bottom-6 right-6 z-40 p-3 rounded-full shadow-lg transition-all duration-300 bg-zinc-900 text-white hover:bg-zinc-700 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700"
-      aria-label="Back to top"
+      class="fixed bottom-6 right-6 z-40 p-3 rounded-full shadow-lg transition-all duration-300 bg-zinc-900 text-white hover:bg-zinc-700 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700 border border-zinc-800 dark:border-zinc-700"
+      aria-label="Scroll to top"
     >
       <ArrowUp class="w-5 h-5" />
     </button>
