@@ -9,22 +9,19 @@ const projects = [
     id: 'gdsi',
     image: '/images/project-gdsi.jpg',
     key: 'gdsi',
-    link: '#',
-    class: 'md:row-span-2' // Portrait / Tall card
+    aspect: 'aspect-[9/16]'
   },
   {
     id: 'school',
     image: '/images/project-pronote.jpg',
     key: 'school',
-    link: '#',
-    class: '' // Standard card
+    aspect: 'aspect-[16/9]'
   },
   {
     id: 'tv',
     image: '/images/project-tv.jpg',
     key: 'tv',
-    link: '#',
-    class: 'md:col-span-2' // Landscape / Wide card
+    aspect: 'aspect-[16/9]'
   }
 ]
 </script>
@@ -42,43 +39,80 @@ const projects = [
         </p>
       </div>
 
-      <!-- Bento Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[300px]">
-        <div
-          v-for="project in projects"
-          :key="project.id"
-          class="group relative rounded-3xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm transition-all hover:shadow-md"
-          :class="project.class"
-        >
-          <!-- Image -->
-          <div class="absolute inset-0 w-full h-full">
-            <img
-              :src="project.image"
-              :alt="t.works[project.key].title"
-              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-            <!-- Dark Gradient Overlay for Text Readability -->
-            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
-          </div>
-
-          <!-- Content (Always Visible) -->
-          <div class="absolute inset-0 p-6 flex flex-col justify-end">
-            <div class="transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-              <div class="flex justify-between items-end mb-2">
-                <span class="text-indigo-400 text-sm font-medium tracking-wide uppercase">{{ t.works[project.key].tag }}</span>
-                <div class="bg-white/10 backdrop-blur-md p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <ArrowUpRight class="w-5 h-5 text-white" />
-                </div>
+      <!-- Projects Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Left Column: Portrait Project (GDSI) -->
+        <div class="h-full">
+          <div class="group h-full bg-zinc-100 dark:bg-zinc-900 rounded-3xl overflow-hidden border border-zinc-200/50 dark:border-zinc-800 transition-transform duration-300 hover:scale-[1.02]">
+            <!-- Image Area -->
+            <div class="w-full overflow-hidden bg-zinc-200 dark:bg-zinc-800">
+              <img
+                :src="projects[0].image"
+                :alt="t.works[projects[0].key].title"
+                class="w-full h-full object-cover"
+                :class="projects[0].aspect"
+              />
+            </div>
+            <!-- Text Area -->
+            <div class="p-8">
+              <div class="flex justify-between items-start mb-4">
+                <span class="text-indigo-500 dark:text-indigo-400 text-sm font-medium tracking-wide uppercase">{{ t.works[projects[0].key].tag }}</span>
               </div>
-              <h3 class="text-2xl font-bold text-white mb-2">{{ t.works[project.key].title }}</h3>
-              <p class="text-zinc-300 text-sm line-clamp-2 group-hover:line-clamp-none transition-all duration-300">
-                {{ t.works[project.key].desc }}
+              <h3 class="text-3xl font-bold text-zinc-900 dark:text-white mb-3">{{ t.works[projects[0].key].title }}</h3>
+              <p class="text-zinc-600 dark:text-zinc-400 text-lg leading-relaxed">
+                {{ t.works[projects[0].key].desc }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Stacked Landscape Projects -->
+        <div class="flex flex-col gap-8 h-full">
+          <!-- School Hacker -->
+          <div class="group flex-1 bg-zinc-100 dark:bg-zinc-900 rounded-3xl overflow-hidden border border-zinc-200/50 dark:border-zinc-800 transition-transform duration-300 hover:scale-[1.02]">
+            <!-- Image Area -->
+            <div class="w-full overflow-hidden bg-zinc-200 dark:bg-zinc-800">
+              <img
+                :src="projects[1].image"
+                :alt="t.works[projects[1].key].title"
+                class="w-full h-full object-cover"
+                :class="projects[1].aspect"
+              />
+            </div>
+            <!-- Text Area -->
+            <div class="p-8">
+              <div class="flex justify-between items-start mb-4">
+                <span class="text-indigo-500 dark:text-indigo-400 text-sm font-medium tracking-wide uppercase">{{ t.works[projects[1].key].tag }}</span>
+              </div>
+              <h3 class="text-2xl font-bold text-zinc-900 dark:text-white mb-3">{{ t.works[projects[1].key].title }}</h3>
+              <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                {{ t.works[projects[1].key].desc }}
               </p>
             </div>
           </div>
 
-          <!-- Link Overlay -->
-          <a :href="project.link" class="absolute inset-0 z-20" :aria-label="t.works[project.key].title"></a>
+          <!-- TV Zap -->
+          <div class="group flex-1 bg-zinc-100 dark:bg-zinc-900 rounded-3xl overflow-hidden border border-zinc-200/50 dark:border-zinc-800 transition-transform duration-300 hover:scale-[1.02]">
+            <!-- Image Area -->
+            <div class="w-full overflow-hidden bg-zinc-200 dark:bg-zinc-800">
+              <img
+                :src="projects[2].image"
+                :alt="t.works[projects[2].key].title"
+                class="w-full h-full object-cover"
+                :class="projects[2].aspect"
+              />
+            </div>
+            <!-- Text Area -->
+            <div class="p-8">
+              <div class="flex justify-between items-start mb-4">
+                <span class="text-indigo-500 dark:text-indigo-400 text-sm font-medium tracking-wide uppercase">{{ t.works[projects[2].key].tag }}</span>
+              </div>
+              <h3 class="text-2xl font-bold text-zinc-900 dark:text-white mb-3">{{ t.works[projects[2].key].title }}</h3>
+              <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                {{ t.works[projects[2].key].desc }}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
