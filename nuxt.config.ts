@@ -8,6 +8,15 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
+  modules: [
+    '@nuxtjs/tailwindcss',
+    '@vueuse/nuxt',
+    '@vueuse/motion/nuxt',
+    '@nuxtjs/sitemap',
+  ],
+  site: {
+    url: 'https://www.matthieufrain.dev',
+  },
   app: {
     head: {
       title: 'Matthieu Frain | Creative Developer',

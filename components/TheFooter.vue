@@ -1,58 +1,35 @@
 <template>
-  <footer id="contact" class="relative py-32 px-6 md:px-20 border-t border-white/5 bg-black">
-    <div class="max-w-7xl mx-auto flex flex-col items-center text-center space-y-12">
-      <h2 class="font-display text-5xl md:text-8xl font-bold text-white tracking-tighter">
-        LET'S TALK
-      </h2>
-      <a
-        href="mailto:contact@matthieufrain.com"
-        class="group relative inline-flex items-center justify-center px-12 py-6 overflow-hidden rounded-full bg-indigo-600 text-white transition-transform hover:scale-105"
-      >
-        <span class="relative z-10 font-bold text-xl tracking-wide">Get in touch</span>
-        <div class="absolute inset-0 bg-indigo-500 transition-transform duration-300 group-hover:scale-110"></div>
-      </a>
-
-      <div class="flex gap-8 pt-12">
-        <a href="#" class="text-slate-400 hover:text-white transition-colors">GitHub</a>
-        <a href="#" class="text-slate-400 hover:text-white transition-colors">LinkedIn</a>
-        <a href="#" class="text-slate-400 hover:text-white transition-colors">Twitter</a>
+  <footer class="py-12 px-6 md:px-20 border-t border-zinc-900 bg-zinc-950/50 backdrop-blur-sm">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+      <div class="text-center md:text-left">
+        <h3 class="text-2xl font-bold text-white mb-2">{{ t.footer.title }}</h3>
+        <p class="text-zinc-400">{{ t.footer.cta }}</p>
       </div>
-
-      <p class="text-slate-600 text-sm">
-        &copy; {{ new Date().getFullYear() }} Matthieu Frain. Architect & Hacker.
-      </p>
+      <div class="flex items-center gap-6">
+        <a href="mailto:matthieufrain.pro@gmail.com" class="text-zinc-400 hover:text-indigo-400 transition-colors">
+          <Mail class="w-6 h-6" />
+          <span class="sr-only">Email</span>
+        </a>
+        <a href="https://github.com/MatthieuFrain" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-indigo-400 transition-colors">
+          <Github class="w-6 h-6" />
+          <span class="sr-only">GitHub</span>
+        </a>
+        <a href="https://www.linkedin.com/in/matthieu-frain-0628511a6/" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-indigo-400 transition-colors">
+          <Linkedin class="w-6 h-6" />
+          <span class="sr-only">LinkedIn</span>
+        </a>
+      </div>
     </div>
-
-    <!-- Back to Top -->
-    <button
-      @click="scrollToTop"
-      class="fixed bottom-8 right-8 p-4 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-white transition-all duration-300 hover:bg-white/10 hover:scale-110 z-40"
-      :class="{ 'translate-y-24 opacity-0': !showBackToTop, 'translate-y-0 opacity-100': showBackToTop }"
-    >
-      <ArrowUp class="w-6 h-6" />
-    </button>
+    <div class="mt-12 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left text-zinc-600 text-sm">
+      <p>&copy; {{ new Date().getFullYear() }} {{ t.footer.copyright }}</p>
+      <a href="/sitemap.xml" class="hover:text-zinc-400 transition-colors">Sitemap</a>
+    </div>
   </footer>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
-import { ArrowUp } from 'lucide-vue-next'
+import { Mail, Github, Linkedin } from 'lucide-vue-next'
+import { useTranslation } from '~/composables/useTranslation'
 
-const showBackToTop = ref(false)
-
-const handleScroll = () => {
-  showBackToTop.value = window.scrollY > 500
-}
-
-const scrollToTop = () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-}
-
-onMounted(() => {
-  window.addEventListener('scroll', handleScroll)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll)
-})
+const { t } = useTranslation()
 </script>

@@ -1,20 +1,20 @@
 <template>
-  <section class="relative min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden">
-    <!-- Aurora Blobs -->
-    <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-      <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-500/30 rounded-full blur-[100px] animate-blob mix-blend-screen"></div>
-      <div class="absolute top-1/3 right-1/4 w-96 h-96 bg-violet-500/30 rounded-full blur-[100px] animate-blob animation-delay-2000 mix-blend-screen"></div>
-      <div class="absolute bottom-1/4 left-1/3 w-96 h-96 bg-cyan-500/30 rounded-full blur-[100px] animate-blob animation-delay-4000 mix-blend-screen"></div>
-    </div>
-
-    <div class="relative z-10 text-center space-y-8 max-w-7xl mx-auto">
-      <h1 class="font-display text-6xl md:text-[10rem] font-bold tracking-tighter leading-[0.9] text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/50 animate-fade-in-up drop-shadow-2xl">
-        CRAFTING<br />THE FUTURE.
+  <section class="min-h-screen flex flex-col justify-center items-start px-6 md:px-20 max-w-7xl mx-auto pt-32">
+    <div class="space-y-8 animate-fade-in-up">
+      <h1 class="font-display text-6xl md:text-9xl font-bold tracking-tighter leading-none whitespace-pre-line">
+        <span class="block text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-violet-400 to-blue-400 animate-aurora bg-[length:200%_auto]">
+          {{ t.hero.title }}
+        </span>
       </h1>
-
-      <p class="text-xl md:text-2xl text-zinc-400 max-w-2xl mx-auto font-light tracking-wide animate-fade-in-up" style="animation-delay: 0.2s">
-        Matthieu Frain. Transforming complex problems into fluid interfaces.
+      <p class="text-2xl md:text-4xl text-zinc-400 max-w-3xl font-light tracking-wide">
+        {{ t.hero.subtitle }}
       </p>
+      <div class="pt-8 flex gap-6">
+        <a href="#works" class="group relative px-8 py-4 bg-white text-zinc-950 rounded-full font-medium text-lg overflow-hidden transition-all hover:scale-105">
+          <div class="absolute inset-0 bg-gradient-to-r from-indigo-400 to-violet-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <span class="relative z-10 group-hover:text-white transition-colors">{{ t.hero.cta }}</span>
+        </a>
+      </div>
     </div>
 
     <!-- Scroll Indicator -->
@@ -25,5 +25,7 @@
 </template>
 
 <script setup>
-// Components auto-imported
+import { useTranslation } from '~/composables/useTranslation'
+
+const { t } = useTranslation()
 </script>
