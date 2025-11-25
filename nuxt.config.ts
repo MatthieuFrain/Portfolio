@@ -22,10 +22,6 @@ export default defineNuxtConfig({
     url: 'https://www.matthieufrain.dev',
   },
 
-  sitemap: {
-    urls: ['/'],
-  },
-
   // Nitro configuration
   nitro: {
     preset: 'vercel',

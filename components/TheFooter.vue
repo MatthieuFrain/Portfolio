@@ -27,7 +27,7 @@ const socialLinks = [
 </script>
 
 <template>
-  <footer id="contact" class="py-24 border-t border-white/5 relative z-10 bg-zinc-950">
+  <footer id="contact" class="py-24 border-t border-zinc-200 dark:border-zinc-800 relative z-10 bg-zinc-100 dark:bg-zinc-950 transition-colors">
     <div class="container mx-auto px-4">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
         <!-- CTA Section -->
@@ -37,7 +37,7 @@ const socialLinks = [
           </h2>
           <a
             href="mailto:matthieufrain.pro@gmail.com"
-            class="inline-flex items-center gap-2 text-xl text-indigo-400 hover:text-indigo-300 transition-colors"
+            class="inline-flex items-center gap-2 text-xl text-indigo-500 dark:text-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-300 transition-colors"
           >
             {{ t.footer.cta }}
             <span class="text-2xl">→</span>
@@ -53,9 +53,9 @@ const socialLinks = [
               :href="link.href"
               target="_blank"
               rel="noopener noreferrer"
-              class="flex items-center gap-4 text-zinc-400 hover:text-white transition-colors group"
+              class="flex items-center gap-4 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors group"
             >
-              <div class="p-3 rounded-full bg-white/5 group-hover:bg-white/10 transition-colors">
+              <div class="p-3 rounded-full bg-white dark:bg-white/5 border border-zinc-200 dark:border-zinc-800 group-hover:border-indigo-500/30 transition-colors">
                 <component :is="link.icon" class="w-5 h-5" />
               </div>
               <span class="text-lg">{{ link.label }}</span>
@@ -65,7 +65,7 @@ const socialLinks = [
       </div>
 
       <!-- Copyright -->
-      <div class="mt-24 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-zinc-500">
+      <div class="mt-24 pt-8 border-t border-zinc-200 dark:border-zinc-800 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-zinc-500">
         <p>© {{ new Date().getFullYear() }} {{ t.footer.copyright }}</p>
         <div class="flex gap-6">
           <!-- <NuxtLink to="/sitemap.xml" class="hover:text-zinc-300 transition-colors">Sitemap</NuxtLink> -->

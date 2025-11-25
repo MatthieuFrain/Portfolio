@@ -6,7 +6,7 @@
           {{ t.hero.title }}
         </span>
       </h1>
-      <p class="text-2xl md:text-4xl text-zinc-400 max-w-3xl font-light tracking-wide">
+      <p class="text-2xl md:text-4xl text-zinc-600 dark:text-zinc-400 max-w-3xl font-light tracking-wide">
         {{ t.hero.subtitle }}
       </p>
       <div class="pt-8 flex gap-6">

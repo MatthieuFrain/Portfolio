@@ -49,7 +49,7 @@ const onHide = () => {
         <h2 class="text-4xl md:text-6xl font-display font-bold mb-6">
           {{ t.works.title }}
         </h2>
-        <p class="text-xl text-zinc-400 max-w-2xl">
+        <p class="text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl">
           {{ t.works.subtitle }}
         </p>
       </div>
@@ -64,7 +64,7 @@ const onHide = () => {
           @click="showImg(index)"
         >
           <!-- Card Container -->
-          <div class="relative overflow-hidden rounded-2xl bg-zinc-900 border border-white/5">
+          <div class="relative overflow-hidden rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm">
             <!-- Image Container -->
             <div class="aspect-video w-full overflow-hidden">
               <img
@@ -75,18 +75,18 @@ const onHide = () => {
             </div>
 
             <!-- Desktop Overlay (Hidden on mobile, visible on hover on desktop) -->
-            <div class="hidden md:flex absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex-col justify-end p-6">
+            <div class="hidden md:flex absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex-col justify-end p-6">
               <span class="text-indigo-400 text-sm font-medium mb-2">{{ t.works[project.key].tag }}</span>
-              <h3 class="text-2xl font-bold mb-2">{{ t.works[project.key].title }}</h3>
-              <p class="text-zinc-300 text-sm">{{ t.works[project.key].desc }}</p>
+              <h3 class="text-2xl font-bold text-white mb-2">{{ t.works[project.key].title }}</h3>
+              <p class="text-zinc-200 text-sm">{{ t.works[project.key].desc }}</p>
             </div>
           </div>
 
           <!-- Mobile Text (Visible only on mobile below the image) -->
           <div class="block md:hidden mt-4">
-            <span class="text-indigo-400 text-xs font-medium block mb-1">{{ t.works[project.key].tag }}</span>
-            <h3 class="text-xl font-bold mb-2">{{ t.works[project.key].title }}</h3>
-            <p class="text-zinc-400 text-sm leading-relaxed">{{ t.works[project.key].desc }}</p>
+            <span class="text-indigo-500 dark:text-indigo-400 text-xs font-medium block mb-1">{{ t.works[project.key].tag }}</span>
+            <h3 class="text-xl font-bold text-zinc-900 dark:text-white mb-2">{{ t.works[project.key].title }}</h3>
+            <p class="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">{{ t.works[project.key].desc }}</p>
           </div>
         </div>
       </div>

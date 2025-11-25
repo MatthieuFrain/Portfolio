@@ -37,14 +37,14 @@ const toggleDark = useToggle(isDark)
 
 <style scoped>
 .glass-panel {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid #e4e4e7; /* border-zinc-200 */
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 :global(.dark) .glass-panel {
-  background: rgba(9, 9, 11, 0.7);
+  background: rgba(24, 24, 27, 0.8); /* bg-zinc-900 */
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 </style>
