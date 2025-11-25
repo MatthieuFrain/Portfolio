@@ -14,13 +14,13 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@vueuse/motion/nuxt',
     '@vueuse/nuxt',
-    '@nuxtjs/sitemap',
+    // '@nuxtjs/sitemap',
   ],
 
   // Site configuration
-  site: {
-    url: 'https://www.matthieufrain.dev',
-  },
+  // site: {
+  //   url: 'https://www.matthieufrain.dev',
+  // },
 
   // Nitro configuration
   nitro: {
