@@ -1,6 +1,6 @@
 <template>
-  <section class="min-h-screen flex flex-col justify-center items-center md:items-start px-6 md:px-20 max-w-7xl mx-auto pt-40 pb-32 md:pb-0 text-center md:text-left">
-    <div class="space-y-8 animate-fade-in-up flex flex-col items-center md:items-start">
+  <section class="min-h-screen flex flex-col justify-center items-center md:items-start px-6 max-w-7xl mx-auto pt-40 pb-32 md:pb-0 text-center md:text-left">
+    <div class="space-y-8 animate-fade-in-up flex flex-col items-center md:items-start w-full">
       <h1 class="font-display text-6xl md:text-9xl font-bold tracking-tighter leading-none whitespace-pre-line">
         <span class="block text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-violet-400 to-blue-400 animate-aurora bg-[length:200%_auto]">
           {{ t.hero.title }}
@@ -15,11 +15,6 @@
         </a>
       </div>
     </div>
-
-    <!-- Scroll Indicator -->
-    <a href="#works" class="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce opacity-50 cursor-pointer hover:opacity-100 transition-opacity">
-      <div class="w-px h-12 bg-gradient-to-b from-transparent via-zinc-400 to-transparent"></div>
-    </a>
   </section>
 </template>
 

@@ -2,6 +2,7 @@
 import { useTranslation } from '~/composables/useTranslation'
 import VueEasyLightbox from 'vue-easy-lightbox'
 import { ref, computed } from 'vue'
+import { Plus } from 'lucide-vue-next'
 
 const { t } = useTranslation()
 
@@ -39,11 +40,13 @@ const showImg = (index: number) => {
 const onHide = () => {
   visibleRef.value = false
 }
+
+const currentProject = computed(() => projects[indexRef.value])
 </script>
 
 <template>
   <section id="works" class="py-32 relative z-10">
-    <div class="container mx-auto px-4">
+    <div class="max-w-7xl mx-auto px-6">
       <!-- Section Header -->
       <div class="mb-16">
         <h2 class="text-4xl md:text-6xl font-display font-bold mb-6">
@@ -74,6 +77,11 @@ const onHide = () => {
               />
             </div>
 
+            <!-- View Project Hint (Always Visible) -->
+            <div class="absolute top-4 right-4 z-20 bg-white/90 dark:bg-black/90 backdrop-blur-sm p-2 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-sm transition-transform duration-300 group-hover:scale-110">
+              <Plus class="w-4 h-4 text-zinc-900 dark:text-white" />
+            </div>
+
             <!-- Desktop Overlay (Hidden on mobile, visible on hover on desktop) -->
             <div class="hidden md:flex absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex-col justify-end p-6">
               <span class="text-indigo-400 text-sm font-medium mb-2">{{ t.works[project.key].tag }}</span>
@@ -100,6 +108,42 @@ const onHide = () => {
         :index="indexRef"
         @hide="onHide"
       />
+
+      <!-- Lightbox Info Overlay -->
+      <Transition name="fade">
+        <div v-if="visibleRef" class="fixed bottom-0 left-0 w-full z-[10000] p-6 pointer-events-none flex justify-center">
+          <div class="glass-panel px-8 py-6 rounded-2xl max-w-2xl w-full pointer-events-auto text-center md:text-left">
+            <span class="text-indigo-500 dark:text-indigo-400 text-sm font-medium block mb-2">{{ t.works[currentProject.key].tag }}</span>
+            <h3 class="text-2xl font-bold text-zinc-900 dark:text-white mb-2">{{ t.works[currentProject.key].title }}</h3>
+            <p class="text-zinc-600 dark:text-zinc-300">{{ t.works[currentProject.key].desc }}</p>
+          </div>
+        </div>
+      </Transition>
     </ClientOnly>
   </section>
 </template>
+
+<style scoped>
+.glass-panel {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(228, 228, 231, 0.5);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+:global(.dark) .glass-panel {
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid rgba(39, 39, 42, 0.5);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
+}
+</style>

@@ -64,7 +64,7 @@ const scrollToSection = (id: string) => {
 }
 
 :global(.dark) .glass-panel {
-  background: rgba(24, 24, 27, 0.8); /* bg-zinc-900/80 */
+  background: rgba(0, 0, 0, 0.9); /* bg-black/90 */
   border: 1px solid rgba(39, 39, 42, 0.5); /* border-zinc-800/50 */
 }
 
